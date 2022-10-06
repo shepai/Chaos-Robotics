@@ -1,5 +1,5 @@
 # Chaos-Robotics
-Repository for robot development using chaotic dynamics
+Repository for robot development using chaotic dynamics. This is part of the work for my doctoral thesis. Here we will explore different ways of using chaotic dynamics for motor control, with the end goal of a resiliant robot that adapts to terrain.
 
 ## Introduction
 Robust motor control for locomotion of robots with a relatively high number of degrees-of-freedom in complex
