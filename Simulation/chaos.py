@@ -13,7 +13,7 @@ def lorenz_attr(x, y, z):
     return x_dot, y_dot, z_dot
 
 
-for rho in range(10):
+for rho in range(28):
     for prandtl in range(0,100,5):
         #loop through search space
         dt = 0.01
@@ -31,8 +31,13 @@ for rho in range(10):
             zs[i + 1] = zs[i] + (z_dot * dt)
         #show in real time
         plt.cla()
+        
+        
+        plt.plot(ys-2,c="r",label="y")
+        plt.plot(zs-2,c="b",label="z")
+        plt.plot(xs-2,c="g",label="x")
+        plt.legend(loc="upper right")
         plt.xlabel("Time step")
         plt.ylabel("Velocity")
-        plt.plot(xs-2)
         plt.pause(0.05)
 plt.show()
