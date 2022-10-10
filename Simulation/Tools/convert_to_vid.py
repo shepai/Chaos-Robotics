@@ -10,7 +10,7 @@ p=cv.imread(folder+items[0])
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'output_video_cart_pole.avi',cv.VideoWriter_fourcc(*'DIVX'), 60, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'output_video_pend.avi',cv.VideoWriter_fourcc(*'DIVX'), 60, (w,h))
 
 
 for i in items:
