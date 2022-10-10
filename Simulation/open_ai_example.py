@@ -26,10 +26,11 @@ def run_trial(genotype,num_trials,show=True):
         if terminated or truncated:
             observation, info = env.reset()
     if show:
-        plt.imshow(env.render())
-        plt.show()
+        endObs=observation
+        return rewards,endObs,env.render()
     env.close()
-    return rewards
+    endObs=observation
+    return rewards,endObs
 
 def visualise(genotype,num_trials):
     env = gym.make(SIM,render_mode="rgb_array")
@@ -76,25 +77,50 @@ def convert(signal,val=5):
     new[np.argwhere(signal>(val*-1))]=1
     new[np.argwhere(signal>val)]=2
     return new
+def fitness(observation):
+    best=[0.6, 0.07]
+    worst=[-1.2, -0.07]
+    return ((observation[0]))/(best[0]+abs(worst[0]))#*0.5 + (abs(observaion[])/(best[1]+abs(worst[1])))*0.5
 
 
 prandtl = 10
 rho = 28
 beta = 8/3 
 
+GEN=100
 best=-100
 best_chaotic=None
+saved=None
 for rho in range(28):
-    for prandtl in range(0,10):
+    for prandtl in range(1,10):
         xs,ys,zs=get_velocities(prandtl,rho,beta)
         geno=convert(xs,val=5)
-        reward=run_trial(geno,100,show=False)
-        plt.cla()
-        plt.plot(geno[0:100])
-        plt.title("Gen %:"+str((rho+prandtl)/(10*28))+" Reward"+str(reward))
+        reward,obs=run_trial(geno,GEN,show=False)
+        reward=fitness(obs)
+        #plt.cla()
+        #plt.plot(geno[0:100])
+        #plt.title("Gen %:"+str((rho+prandtl)/(10*28))+" Reward"+str(reward))
         plt.pause(0.05)
         if reward>=best:
             best=reward
+            saved=dc(xs)
             best_chaotic=dc(geno) #deep copy the genotype
 print("Reward sum:",best)
-reward=visualise(best_chaotic,100)
+plt.cla()
+reward,obs,t=run_trial(best_chaotic,GEN,show=True)
+
+fig, axes = plt.subplots(1,3, figsize=(3.5, 2.0))
+axes[0].set_title("Chaotic signal", loc="left")
+axes[0].plot(saved[0:GEN])
+axes[0].set_xlabel("Iteration")
+axes[0].set_ylabel("Velocity")
+axes[1].set_title("Chaotic signal conversion", loc="left")
+axes[1].plot(best_chaotic[0:GEN])
+axes[1].set_xlabel("Iteration")
+axes[1].set_ylabel("Action")
+axes[2].set_title("End step", loc="left")
+axes[2].imshow(t)
+axes[2].xaxis.set_visible(False)
+axes[2].yaxis.set_visible(False)
+
+plt.show()
