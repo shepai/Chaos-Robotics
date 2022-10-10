@@ -25,14 +25,14 @@ def run_trial(genotype,num_trials,show=True):
         
         if terminated or truncated:
             observation, info = env.reset()
+    endObs=observation
     if show:
-        endObs=observation
         return rewards,endObs,env.render()
     env.close()
     endObs=observation
     return rewards,endObs
 
-def visualise(genotype,num_trials):
+def visualise(genotype,num_trials,filepath=""):
     env = gym.make(SIM,render_mode="rgb_array")
     observation, info = env.reset()
     rewards=0
@@ -42,12 +42,30 @@ def visualise(genotype,num_trials):
         action = int(genotype[_])
         observation, reward, terminated, truncated, info = env.step(action)
         rewards+=reward
-        plt.imshow(env.render())
-        plt.pause(0.05)
+        fig, axes = plt.subplots(3,1)
+        #axes[0].figure(figsize=(5,1))
+        axes[0].set_title("Chaotic signal", loc="left")
+        axes[0].plot(saved[0:GEN])
+        axes[0].set_xlabel("Iteration")
+        axes[0].set_ylabel("Velocity")
+        #axes[1].figure(figsize=(5,1))
+        axes[1].set_title("signal conversion", loc="left")
+        axes[1].plot(best_chaotic[0:GEN])
+        axes[1].set_xlabel("Iteration")
+        axes[1].set_ylabel("Action")
+
+        axes[2].set_title("Current step", loc="left")
+        axes[2].imshow(env.render())
+        axes[2].xaxis.set_visible(False)
+        axes[2].yaxis.set_visible(False)
+        fig.tight_layout(pad=0.05)
+        fig.savefig(filepath+"save"+str(_)+".png")
+        plt.close()
         if terminated or truncated:
             observation, info = env.reset()
-    env.close()
-    return rewards
+    
+    endObs=observation
+    return rewards,endObs,env.render()
 
 def lorenz_attr(x, y, z):
     x_dot = prandtl*(y - x)
@@ -87,7 +105,7 @@ prandtl = 10
 rho = 28
 beta = 8/3 
 
-GEN=100
+GEN=1000
 best=-100
 best_chaotic=None
 saved=None
@@ -106,10 +124,12 @@ for rho in range(28):
             saved=dc(xs)
             best_chaotic=dc(geno) #deep copy the genotype
 print("Reward sum:",best)
-plt.cla()
-reward,obs,t=run_trial(best_chaotic,GEN,show=True)
+plt.close()
 
-fig, axes = plt.subplots(1,3, figsize=(3.5, 2.0))
+reward,obs,t=visualise(best_chaotic,GEN,filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/")
+
+
+"""fig, axes = plt.subplots(1,3, figsize=(3.5, 2.0))
 axes[0].set_title("Chaotic signal", loc="left")
 axes[0].plot(saved[0:GEN])
 axes[0].set_xlabel("Iteration")
@@ -122,5 +142,4 @@ axes[2].set_title("End step", loc="left")
 axes[2].imshow(t)
 axes[2].xaxis.set_visible(False)
 axes[2].yaxis.set_visible(False)
-
-plt.show()
+plt.show()"""
