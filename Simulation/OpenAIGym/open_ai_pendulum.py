@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D 
 import random
 from copy import deepcopy as dc
+import math as maths
 
 SIM='Pendulum-v1'
 
@@ -31,7 +32,7 @@ def run_trial(genotype,num_trials,show=True):
             if sum(observations)>=totalFit: #save best observaations
                 totalFit=sum(observation)
                 best_obvs=dc(observations) #copy obs
-            observation=[]
+            observations=[]
     endObs=observation
     if show:
         return rewards,endObs,env.render()
@@ -107,19 +108,21 @@ def convert(signal,val=4):
 def fitness(observation): #fitness determined by how far up
     best=[1, 1, 8]
     worst=[-1, -1, -8]
-    return ((abs(best[0])-abs(observation[0]))/2 + (abs(best[1])-observation[1]))/2
+    eclid=maths.sqrt(((best[0])-(observation[0]))**2 + (((best[1])-(observation[1]))**2))
+    space=maths.sqrt(((best[0])-(worst[0]))**2 + (((best[1])-(worst[1]))**2))
+    return eclid/space
 
 
 prandtl = 10
 rho = 28
 beta = 8/3 
 
-GEN=1000
+GEN=500
 best=-100
 best_chaotic=None
 saved=None
-for rho in range(100):
-    for prandtl in range(1,100):
+for rho in range(50):
+    for prandtl in range(1,15):
         xs,ys,zs=get_velocities(prandtl,rho,beta)
         geno=convert(xs,val=2)
         reward,obs=run_trial(geno,GEN,show=False)

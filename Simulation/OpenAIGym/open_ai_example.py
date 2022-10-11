@@ -22,7 +22,7 @@ def run_trial(genotype,num_trials,show=True):
     totalFit=0
     best_obvs=[]
     for _ in range(num_trials):
-        action = genotype[_]
+        action = int(genotype[_])
         observation, reward, terminated, truncated, info = env.step(action) #step through with each action
         rewards+=reward
         observations.append(fitness(observation))
@@ -31,7 +31,7 @@ def run_trial(genotype,num_trials,show=True):
             if sum(observations)>=totalFit: #save best observaations
                 totalFit=sum(observation)
                 best_obvs=dc(observations) #copy obs
-            observation=[]
+            observations=[]
     endObs=observation
     if show:
         return rewards,endObs,env.render()
@@ -47,7 +47,7 @@ def visualise(genotype,num_trials,filepath=""):
     observations=[]
     for _ in range(num_trials):
         #action = env.action_space.sample()
-        action = genotype[_]
+        action = int(genotype[_])
         observation, reward, terminated, truncated, info = env.step(action)
         rewards+=reward
         observations.append(fitness(observation))
@@ -119,12 +119,12 @@ GEN=1000
 best=-100
 best_chaotic=None
 saved=None
-for rho in range(28):
-    for prandtl in range(1,10):
+for rho in range(50):
+    for prandtl in range(1,15):
         xs,ys,zs=get_velocities(prandtl,rho,beta)
         geno=convert(xs,val=5)
         reward,obs=run_trial(geno,GEN,show=False)
-        reward=fitness(obs)
+        reward=sum(obs)
         #plt.cla()
         #plt.plot(geno[0:100])
         #plt.title("Gen %:"+str((rho+prandtl)/(10*28))+" Reward"+str(reward))
