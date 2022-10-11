@@ -19,7 +19,7 @@ def run_trial(genotype,num_trials,show=True):
     rewards=0
     assert len(genotype)>=num_trials, "Make sure the num_trials is not greater than your genotype size"
     observations=[]
-    totalFit=0
+    totalFit=-100
     best_obvs=[]
     for _ in range(num_trials):
         action = int(genotype[_])
@@ -42,7 +42,7 @@ def run_trial(genotype,num_trials,show=True):
 def visualise(genotype,num_trials,filepath=""):
     env = gym.make(SIM,render_mode="rgb_array")
     observation, info = env.reset()
-    rewards=0
+    rewards=-100
     assert len(genotype)>=num_trials, "Make sure the num_trials is not greater than your genotype size"
     observations=[]
     for _ in range(num_trials):
