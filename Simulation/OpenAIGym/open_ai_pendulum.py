@@ -18,43 +18,53 @@ def run_trial(genotype,num_trials,show=True):
     observation, info = env.reset()
     rewards=0
     assert len(genotype)>=num_trials, "Make sure the num_trials is not greater than your genotype size"
+    observations=[]
+    totalFit=0
+    best_obvs=[]
     for _ in range(num_trials):
         action = genotype[_]
-        observation, reward, terminated, truncated, info = env.step(action)
+        observation, reward, terminated, truncated, info = env.step(action) #step through with each action
         rewards+=reward
-        
-        if terminated or truncated:
+        observations.append(fitness(observation))
+        if terminated or truncated: #environment finished
             observation, info = env.reset()
+            if sum(observations)>=totalFit: #save best observaations
+                totalFit=sum(observation)
+                best_obvs=dc(observations) #copy obs
+            observation=[]
     endObs=observation
     if show:
         return rewards,endObs,env.render()
     env.close()
     endObs=observation
-    return rewards,endObs
+    return rewards,best_obvs
 
 def visualise(genotype,num_trials,filepath=""):
     env = gym.make(SIM,render_mode="rgb_array")
     observation, info = env.reset()
     rewards=0
     assert len(genotype)>=num_trials, "Make sure the num_trials is not greater than your genotype size"
+    observations=[]
     for _ in range(num_trials):
         #action = env.action_space.sample()
         action = genotype[_]
         observation, reward, terminated, truncated, info = env.step(action)
         rewards+=reward
+        observations.append(fitness(observation))
+        
         fig, axes = plt.subplots(3,1)
         #axes[0].figure(figsize=(5,1))
-        axes[0].set_title("Chaotic signal", loc="left")
+        axes[0].set_title("A: Chaotic signal", loc="left")
         axes[0].plot(saved[0:GEN])
         axes[0].set_xlabel("Iteration")
         axes[0].set_ylabel("Velocity")
         #axes[1].figure(figsize=(5,1))
-        axes[1].set_title("signal conversion", loc="left")
+        axes[1].set_title("B: Signal conversion", loc="left")
         axes[1].plot(best_chaotic[0:GEN])
         axes[1].set_xlabel("Iteration")
         axes[1].set_ylabel("Action")
 
-        axes[2].set_title("Current step", loc="left")
+        axes[2].set_title("C: Current Reward: "+str(sum(observations)), loc="left")
         axes[2].imshow(env.render())
         axes[2].xaxis.set_visible(False)
         axes[2].yaxis.set_visible(False)
@@ -63,7 +73,7 @@ def visualise(genotype,num_trials,filepath=""):
         plt.close()
         if terminated or truncated:
             observation, info = env.reset()
-    
+            observations=[]
     endObs=observation
     return rewards,endObs,env.render()
 
@@ -97,7 +107,7 @@ def convert(signal,val=4):
 def fitness(observation): #fitness determined by how far up
     best=[1, 1, 8]
     worst=[-1, -1, -8]
-    return ((abs(best[0])-abs(observation[0]))+(abs(best[1])-observation[1]))/2
+    return ((abs(best[0])-abs(observation[0]))/2 + (abs(best[1])-observation[1]))/2
 
 
 prandtl = 10
@@ -108,12 +118,12 @@ GEN=1000
 best=-100
 best_chaotic=None
 saved=None
-for rho in range(28):
-    for prandtl in range(1,10):
+for rho in range(100):
+    for prandtl in range(1,100):
         xs,ys,zs=get_velocities(prandtl,rho,beta)
-        geno=convert(xs,val=5)
+        geno=convert(xs,val=2)
         reward,obs=run_trial(geno,GEN,show=False)
-        reward=fitness(obs)
+        reward=sum(obs)
         #plt.cla()
         #plt.plot(geno[0:100])
         #plt.title("Gen %:"+str((rho+prandtl)/(10*28))+" Reward"+str(reward))
@@ -126,7 +136,7 @@ print("Reward sum:",best)
 plt.close()
 
 reward,obs,t=visualise(best_chaotic,GEN,filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/")
-
+print("done")
 
 """fig, axes = plt.subplots(1,3, figsize=(3.5, 2.0))
 axes[0].set_title("Chaotic signal", loc="left")
