@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00 - Resource Files">
+      <UniqueIdentifier>{9a96e460-a99f-455b-bd05-f3af644e31e9}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="01 - Utils">
+      <UniqueIdentifier>{16180085-8947-4e31-b60a-0091e62bb1e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 - Utils\Util_Header">
+      <UniqueIdentifier>{0743e7fa-598b-4da2-a92d-af1e9f967c9f}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="01 - Utils\Util_Source">
+      <UniqueIdentifier>{b16d2bc1-3b90-48f6-806f-1be6c953ea13}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="02 - Math">
+      <UniqueIdentifier>{0f9c94b9-559a-445f-b9d5-fa504fbd5086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 - Math\Math_Header">
+      <UniqueIdentifier>{25aa8473-e55f-4f75-a3fc-6684ff888501}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="02 - Math\Math_Source">
+      <UniqueIdentifier>{9b67873d-e013-4719-aeb8-11d08bc94b14}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="03 - NeuroLib">
+      <UniqueIdentifier>{36f901c3-c64a-4d64-8011-43fd7a7fc32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 - NeuroLib\3 - OSCIL">
+      <UniqueIdentifier>{a142bc54-3659-4e7f-a8f1-f263c5cf0f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 - NeuroLib\3 - OSCIL\0 - Oscil Header">
+      <UniqueIdentifier>{1cfb190b-9186-4fa7-8c1b-6b40eea49d17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 - NeuroLib\3 - OSCIL\1 - Oscil Source">
+      <UniqueIdentifier>{df25b3a8-d27f-4091-b05a-3602f205155e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 - NeuroLib\3 - OSCIL\2 - Oscil Robot Source">
+      <UniqueIdentifier>{80f70fb4-5a70-4c64-b38a-1f232205d9fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 - NeuroUse">
+      <UniqueIdentifier>{049bb952-085b-478c-bd33-710ce85dc64f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 - NeuroUse\NeuroUse_Header">
+      <UniqueIdentifier>{cc83149e-d7a3-4b19-bdfd-65784cdb1801}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="04 - NeuroUse\NeuroUse_Source">
+      <UniqueIdentifier>{d445c809-1370-431b-96c7-957129fb5498}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="05 - GL">
+      <UniqueIdentifier>{ce33a17b-c3fa-433e-bdf5-cabd09be9b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 - GL\0_GL_Header">
+      <UniqueIdentifier>{17874fb5-16ac-4f98-bd01-34b671c5f580}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="05 - GL\1_GL_Common">
+      <UniqueIdentifier>{e07a0467-e2ad-4d62-a333-8006297f72c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05 - GL\2_GL_Plot">
+      <UniqueIdentifier>{d676003f-f564-401a-bea1-b2cb8dbd40bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 - DX">
+      <UniqueIdentifier>{87ad37cf-a999-4eb1-bb99-aa112001be84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06 - DX\DX_Header">
+      <UniqueIdentifier>{360b80fb-6d58-4054-adbe-05dc8c6c2e40}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="06 - DX\DX_Source">
+      <UniqueIdentifier>{610045c5-60c4-4d3d-8c18-7f2d51b5dad2}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="06 - DX\Robot3D Header">
+      <UniqueIdentifier>{4c661e99-88ba-458f-a47c-d7a05b1d3fa3}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="06 - DX\Robot3D Source">
+      <UniqueIdentifier>{f86e64d4-e990-4829-9308-bde7f72d6b9a}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="06 - DX\SIM">
+      <UniqueIdentifier>{8adc99db-25f5-4ce0-8fa0-eed4436541f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 - ODE">
+      <UniqueIdentifier>{a7761250-412a-46ae-b579-f929154986bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09 - Junction">
+      <UniqueIdentifier>{871f0365-b5f1-4ad1-a5eb-c91f6c20f8ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09 - Junction\1 - GL MultiPlot">
+      <UniqueIdentifier>{31c800ee-185b-4711-bd5f-0973825d19fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09 - Junction\2 - Robot Selection">
+      <UniqueIdentifier>{3a3bc24e-beb9-4a09-883f-77cbe10715aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="21 - UI">
+      <UniqueIdentifier>{91232334-8d45-435b-b449-556e1df6249d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="21 - UI\UI_Source">
+      <UniqueIdentifier>{39d7f769-6fcb-4f5e-b1be-10b14a1bd593}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="21 - UI\UIs_Display">
+      <UniqueIdentifier>{a9a21532-aa23-4217-b0d4-f58661bd279d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="999 - Main Dir Files">
+      <UniqueIdentifier>{58f4c162-2369-469f-ac34-d89efc50af73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 - NeuroUse\Evaluation">
+      <UniqueIdentifier>{8a002899-bea8-45c3-846c-3164a79babd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11 - RK4">
+      <UniqueIdentifier>{676d5d12-280b-48f5-9035-90bc8db1f9fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 - ODE\07.0 - ODE Header">
+      <UniqueIdentifier>{db03e7a7-2264-4d00-986d-7e9140d0eb15}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="07 - ODE\07.1 - ODE Source">
+      <UniqueIdentifier>{2406503c-c2f1-4c16-8f8e-22dfda89573d}</UniqueIdentifier>
+      <Extensions>cpp</Extensions>
+    </Filter>
+    <Filter Include="07 - ODE\07.2 - ODE Robots">
+      <UniqueIdentifier>{390b9b07-4cb5-4276-a6de-95a0a8921637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial">
+      <UniqueIdentifier>{a186b27d-1796-42ec-ab93-76fa77ca120a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07 - ODE\07.2 - ODE Robots\07.2.9 - CE Common">
+      <UniqueIdentifier>{2c883f3a-aa95-44df-ab55-2e625e37ce9d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="image\bitmap4.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\black.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\DNA5.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\DNA5.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\icon2.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\icon2.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\neuron.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\neuron.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\neuron256.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\neuron256.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\neuronomicon_title_s.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\neuronomicon_title_s.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\optimiser.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\optimiser.ico">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="HW\RobotImage.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="..\media\image\RobotImageSmall.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="HW\RobotImageSmall.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\title256.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+    <None Include="image\title256_2.bmp">
+      <Filter>00 - Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>00 - Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Utils\otherfunc.h">
+      <Filter>01 - Utils\Util_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\resource.h">
+      <Filter>01 - Utils\Util_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\mat33.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\matNN.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\quat.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\vec2.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\vec3.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\math\vecN.h">
+      <Filter>02 - Math\Math_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NeuroLib\oscil_random_net.h">
+      <Filter>03 - NeuroLib\3 - OSCIL\0 - Oscil Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NeuroLib\oscillator.h">
+      <Filter>03 - NeuroLib\3 - OSCIL\0 - Oscil Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NeuroUse\neurouse.h">
+      <Filter>04 - NeuroUse\NeuroUse_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\GL\oglwnd.h">
+      <Filter>05 - GL\0_GL_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\camera.h">
+      <Filter>06 - DX\DX_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\fonts.h">
+      <Filter>06 - DX\DX_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\input.h">
+      <Filter>06 - DX\DX_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\meshes.h">
+      <Filter>06 - DX\DX_Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\dxwnd.h">
+      <Filter>06 - DX\Robot3D Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\Robj.h">
+      <Filter>06 - DX\Robot3D Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\DX\sim.h">
+      <Filter>06 - DX\SIM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dynamics\rigidode.h">
+      <Filter>07 - ODE\07.0 - ODE Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Junction\Enumerations.h">
+      <Filter>09 - Junction\2 - Robot Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Status.h">
+      <Filter>999 - Main Dir Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\RK4\RK4.h">
+      <Filter>11 - RK4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NeuroUse\Eval.h">
+      <Filter>04 - NeuroUse\Evaluation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\common\resourceA.rc">
+      <Filter>00 - Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\Utils\otherfunc.cpp">
+      <Filter>01 - Utils\Util_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Utils\RandomWELL.cpp">
+      <Filter>01 - Utils\Util_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\mat33.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\matNN.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\quat.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\vec2.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\vec3.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\math\vecN.cpp">
+      <Filter>02 - Math\Math_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscfunc.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_Alpha_RK.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_Forward_Step.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_learning.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_random_net.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscillator.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_CE_Robots.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\2 - Oscil Robot Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroUse\access_network.cpp">
+      <Filter>04 - NeuroUse\NeuroUse_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroUse\access_network_Core.cpp">
+      <Filter>04 - NeuroUse\NeuroUse_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroUse\neurouse.cpp">
+      <Filter>04 - NeuroUse\NeuroUse_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\access_GL.cpp">
+      <Filter>05 - GL\1_GL_Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\oglwnd.cpp">
+      <Filter>05 - GL\1_GL_Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\glweight.cpp">
+      <Filter>05 - GL\2_GL_Plot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\plot2d.cpp">
+      <Filter>05 - GL\2_GL_Plot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\plot2dmap.cpp">
+      <Filter>05 - GL\2_GL_Plot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\plot3d.cpp">
+      <Filter>05 - GL\2_GL_Plot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\GL\plot_common.cpp">
+      <Filter>05 - GL\2_GL_Plot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\camera.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\DXGraphics.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\fonts.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\input.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\light.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\meshes.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\Move.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\WorldMatrix.cpp">
+      <Filter>06 - DX\DX_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\dxwnd.cpp">
+      <Filter>06 - DX\Robot3D Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\dxwndtext.cpp">
+      <Filter>06 - DX\Robot3D Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\Robj.cpp">
+      <Filter>06 - DX\Robot3D Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\DX\ReadSIM.cpp">
+      <Filter>06 - DX\SIM</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\construct.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\joint_motors.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\joint_motors_servo.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\rigidMeasure.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\rigidode.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\rnode.cpp">
+      <Filter>07 - ODE\07.1 - ODE Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructHex.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructQuad.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructQuad2.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructQuad3.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructStar.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\constructTri.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.1 - Terrestrial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Junction\oglgraph.cpp">
+      <Filter>09 - Junction\1 - GL MultiPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Junction\OscRobo_UI.cpp">
+      <Filter>09 - Junction\1 - GL MultiPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Junction\AddRobotsHere.cpp">
+      <Filter>09 - Junction\2 - Robot Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\uis\Resets.cpp">
+      <Filter>21 - UI\UI_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\uis\uis.cpp">
+      <Filter>21 - UI\UI_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\uis\DisplayText_OSC.cpp">
+      <Filter>21 - UI\UIs_Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\uis\GenoDisplay.cpp">
+      <Filter>21 - UI\UIs_Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\KeyHookView.cpp">
+      <Filter>999 - Main Dir Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LoopView.cpp">
+      <Filter>999 - Main Dir Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Status.cpp">
+      <Filter>999 - Main Dir Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\WinMain.cpp">
+      <Filter>999 - Main Dir Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\RK4\RK4.cpp">
+      <Filter>11 - RK4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\RK4\LoopAll.cpp">
+      <Filter>11 - RK4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroUse\Performance_Func.cpp">
+      <Filter>04 - NeuroUse\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroUse\Evaluate_CE.cpp">
+      <Filter>04 - NeuroUse\Evaluation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\NeuroLib\oscil_doya_wrapper.cpp">
+      <Filter>03 - NeuroLib\3 - OSCIL\1 - Oscil Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\dynamics\construct_CE_Robot_Common.cpp">
+      <Filter>07 - ODE\07.2 - ODE Robots\07.2.9 - CE Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
