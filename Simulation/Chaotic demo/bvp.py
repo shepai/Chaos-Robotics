@@ -9,11 +9,15 @@ a=0.5
 b=1
 
 dt=0.005
+
+dt=0.005
+
 def bvp(x,y):
-        x_d=y-(c*x**3)/(3) + 3*x
-        xs=c*(1-x**2)*x_d - x
-        ys = -1* x
-        return xs, ys
+    x_d=c*(x-x**3 + y)
+    xs=c*(1-x**2)*x_d - x
+    #ys = -1* (x+b*y -a)/c
+    ys=-x*a
+    return xs, ys
 
 def bvp2(x,y):
     x_d=c*(x-x**3 + y)
@@ -22,7 +26,7 @@ def bvp2(x,y):
     return xs, ys
 
 for c in range(1,80):
-    for b in range(1,10):
+    for a in range(1,10):
         x_=np.zeros((size,))
         y_=np.zeros((size,))
         x_[0], y_[0] = (0., 1.)
