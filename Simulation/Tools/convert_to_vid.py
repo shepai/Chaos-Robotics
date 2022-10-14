@@ -10,10 +10,10 @@ p=cv.imread(folder+items[0])
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'output_video_car_alt.avi',cv.VideoWriter_fourcc(*'DIVX'), 60, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'bvp.avi',cv.VideoWriter_fourcc(*'DIVX'), 10, (w,h))
 
 
-for i in items:
-    ad=cv.imread(folder+i)
+for i,j in enumerate(items):
+    ad=cv.imread(folder+"save"+str(i+1)+".png")
     out.write(ad)
 out.release()

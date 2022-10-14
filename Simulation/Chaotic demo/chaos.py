@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 prandtl = 10 
 rho = 28
 beta = 8/3
+filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
 
 def lorenz_attr(x, y, z):
     x_dot = prandtl*(y - x)
@@ -33,11 +34,13 @@ for rho in range(28):
         plt.cla()
         
         
-        plt.plot(ys-2,c="r",label="y")
-        plt.plot(zs-2,c="b",label="z")
-        plt.plot(xs-2,c="g",label="x")
-        plt.legend(loc="upper right")
-        plt.xlabel("Time step")
-        plt.ylabel("Velocity")
+        #plt.plot(ys-2,c="r",label="y")
+        #plt.plot(zs-2,c="b",label="z")
+        #plt.plot(xs-2,c="g",label="x")
+        plt.plot(xs,ys)
+        #plt.legend(loc="upper right")
+        #plt.xlabel("Time step")
+        #plt.ylabel("Velocity")
         plt.pause(0.05)
+        plt.savefig(filepath+"save"+str(rho)+","+str(prandtl)+".png")
 plt.show()
