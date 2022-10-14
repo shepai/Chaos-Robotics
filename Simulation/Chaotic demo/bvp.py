@@ -3,30 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
-size=1000
-c=10
-a=0.5
-b=1
-
-dt=0.005
-
+size=2000
 dt=0.005
 
 def bvp(x,y):
-    x_d=c*(x-x**3 + y)
+    x_d=c*(x-(x**3)/3 + y)
     xs=c*(1-x**2)*x_d - x
     #ys = -1* (x+b*y -a)/c
     ys=-x*a
     return xs, ys
 
-def bvp2(x,y):
-    x_d=c*(x-x**3 + y)
-    xs=c*(1-x**2)*x_d - x
-    ys = -1* (x+b*y -a)/c
-    return xs, ys
 count=0
 for c in range(1,30):
+    #c*=0.1
     for a in range(1,10):
+        #a*=0.1
         x_=np.zeros((size,))
         y_=np.zeros((size,))
         x_[0], y_[0] = (0., 1.)
@@ -40,3 +31,4 @@ for c in range(1,30):
         plt.pause(0.05)
         plt.savefig(filepath+"save"+str(count)+".png")
         count+=1
+    plt.cla()
