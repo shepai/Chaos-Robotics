@@ -24,8 +24,8 @@ def bvp2(x,y):
     xs=c*(1-x**2)*x_d - x
     ys = -1* (x+b*y -a)/c
     return xs, ys
-
-for c in range(1,80):
+count=0
+for c in range(1,30):
     for a in range(1,10):
         x_=np.zeros((size,))
         y_=np.zeros((size,))
@@ -38,4 +38,5 @@ for c in range(1,80):
         #plt.title(str(c))
         plt.plot(x_,y_)
         plt.pause(0.05)
-        plt.savefig(filepath+"save"+str(c)+".png")
+        plt.savefig(filepath+"save"+str(count)+".png")
+        count+=1

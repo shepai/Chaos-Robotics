@@ -115,7 +115,7 @@ prandtl = 10
 rho = 28
 beta = 8/3 
 
-GEN=1000
+GEN=500
 best=-100
 best_chaotic=None
 saved=None

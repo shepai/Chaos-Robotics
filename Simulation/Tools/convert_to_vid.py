@@ -1,5 +1,6 @@
 import os
 import cv2 as cv
+import re 
 
 folder="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
 
@@ -10,10 +11,15 @@ p=cv.imread(folder+items[0])
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'bvp_new.avi',cv.VideoWriter_fourcc(*'DIVX'), 10, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'hill.avi',cv.VideoWriter_fourcc(*'DIVX'), 10, (w,h))
 
 
+#sort
+items.sort(key=lambda f: int(re.sub('\D', '', f)))
+print(items)
+
+#gen vid
 for i,j in enumerate(items):
-    ad=cv.imread(folder+"save"+str(i+1)+".png")
+    ad=cv.imread(folder+str(j))
     out.write(ad)
 out.release()
