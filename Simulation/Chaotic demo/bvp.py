@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as maths
 filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
-size=2000
-dt=0.005
+
 
 def wave_generator(size,theta,a,c,dt,start=(0.,1.)):
     x_=np.zeros((size,))
@@ -55,6 +54,8 @@ def make(x,y,s,_):
 
 count=0
 theta=0
+size=1000
+dt=0.005
 for c in range(1,30):
     #c*=0.1
     for a in range(1,10):
