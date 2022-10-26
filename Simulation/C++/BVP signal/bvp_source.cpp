@@ -14,12 +14,12 @@ public:
         float x;
         float y;
     };
-    float* gen(int size, int c, int a, float dt);
+    float* gen(int size, float c, float a, float dt);
 private:
-    coords get(float x, float y, int c, int a, float dt);
+    coords get(float x, float y, float c, float a, float dt);
 
 };
-BVP::coords BVP::get(float x, float y, int c, int a, float dt)
+BVP::coords BVP::get(float x, float y, float c, float a, float dt)
 {
     float x_d = 0.0, xs = 0.0, ys = 0.0;
     x_d = c * (x - ((std::pow(x, 3)) / 3) + y);
@@ -30,7 +30,7 @@ BVP::coords BVP::get(float x, float y, int c, int a, float dt)
     return res;
 }
 // Returns a + b
-float* BVP::gen(int size, int c, int a, float dt)
+float* BVP::gen(int size,  float c, float a, float dt)
 {
     float* arr = new float[size * 2]; //generate an array of size x and y
     arr[0] = 0.0;
@@ -53,7 +53,7 @@ PYBIND11_MODULE(bvp, m) { //loercase for python modules
     py::class_<BVP>(m, "BVP")
         .def(py::init<>())
         .def("gen",
-            [](BVP& bvp, int size, int c, int a, float dt)
+            [](BVP& bvp, int size,  float c, float a, float dt)
             {
                 return py::memoryview::from_memory(bvp.gen(size, c, a, dt), size * 2 * sizeof(float));
             }); //only public functions
