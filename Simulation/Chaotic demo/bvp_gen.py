@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math as maths
+
 filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
 
 
