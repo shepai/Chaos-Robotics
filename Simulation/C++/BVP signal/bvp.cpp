@@ -5,8 +5,8 @@
 //store cordinae values
 struct coords
 {
-     double x;
-     double y;
+     float x;
+     float y;
 };
 /*
 bvp
@@ -15,9 +15,9 @@ Generates the next x and y in the occilation
 @param: y for the y coord
 
 */
-coords bvp(double x,double y,int c,int a,float dt)
+coords bvp(float x,float y,int c,int a,float dt)
 {
-    double x_d=0.0,xs=0.0,ys=0.0;
+    float x_d=0.0,xs=0.0,ys=0.0;
     x_d=c*(x-((std::pow(x,3))/3) + y);
     xs=(c*(1-std::pow(x,2))*x_d) - x;
     ys=-x*a;
@@ -27,7 +27,7 @@ coords bvp(double x,double y,int c,int a,float dt)
 }
 
 int main(void) {
-    double x=0.0,y=1.0;
+    float x=0.0,y=1.0;
     FILE *fp;
     FILE *gnupipe=NULL;
     char *GnuCommands [] = {"set title \"BVP signal\"","plot 'data.tmp' u 1:2 with linespoints lw 2 lc rgb \"black\""};
