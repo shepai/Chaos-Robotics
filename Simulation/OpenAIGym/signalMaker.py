@@ -15,8 +15,8 @@ env.reset()
 # Define initial parameters
 size=1000
 index=1
-c=10
-a=50
+c=2
+a=26
 #b=100
 theta=maths.pi/8
 dt=0.005
@@ -130,10 +130,12 @@ def convert(signal,val=5):
     new[np.argwhere(signal>val)]=2 #set by threshold
     return new
 def reset(event):
+    global index
     env.reset()
     a_.reset()
     c_.reset()
     dt_.reset()
+    index=0
 def step(event):
     global index
     for i in range(5):  #take 10 steps
