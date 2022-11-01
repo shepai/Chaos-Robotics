@@ -3,59 +3,11 @@
 #include <iostream>
 #include <limits>
 #include <random>
+#include "array.cpp"
 
 std::random_device rd;
 std::default_random_engine generator(rd()); // rd() provides a random seed
 std::uniform_real_distribution<double> distribution(-1,1);
-
-class Array
-{
-    float* array_;
-    int head=0;
-    int size=0;
-    public:
-        Array(int expected_size)
-        {
-            array_ = new float[expected_size];
-            size=expected_size;
-        }
-        void add(float val)
-        {
-            //add items to head
-            if(head>=size)
-            {
-                //change size
-                float* new_ = new float[size*2]; //double size
-                for(int i=0;i<size;i++)
-                {
-                    new_[i]=array_[i];
-                }
-                array_=new_;
-                size=size*2;
-            }
-            array_[head]=val;
-            head+=1;
-        }
-        void change(int index,float val)
-        {
-            //change the value to edit
-            array_[index]=val;
-        }
-        float get(int index)
-        {
-            return array_[index];
-        }
-        int get_size()
-        {
-            return head;
-        }
-        float getLast()
-        {
-            return array_[head-1];
-        }
-};
-
-
 
 class Unit
 {
@@ -66,9 +18,11 @@ class Unit
     int upper_limit,lower_limit,upper_viability,lower_viability=0;
     bool testing;
     Unit* units;
-    Array weights;
+    Array weights;   
     Array thetas,theta_dots,theta_dotsdots;
     public:
+        Unit() = default;
+        
         void init_Unit(int test_interval, 
         int upper_viability, 
         int lower_viability, 
@@ -102,11 +56,12 @@ class Unit
             theta_dots.add(theta_dot0);
             theta_dotsdots = Array(1);
             theta_dotsdots.add(0);
-            Array units = Array(1);
-            weights=Array(1);
+            //Array units = Array(1);
+            //weights=Array(1);
             testing=false;
             self_ind=1; //set the units feedback
             Array test_times=Array(1);
+            timer=0;
             timer=0;
         }
         //step unit
@@ -199,39 +154,105 @@ class Unit
             }
             
         }
+        void add_connection(Unit unit)
+        {
+            //extend array
+            int num = sizeof(units);
+            units = new Unit[num+1];
+            units[num+1]=unit;
+        }
 
 };
+
 //A class to represent a Homeostat, with an arbitrary number of units.
 #include <array>
 class Homeostat
 {
     float t=0;
+    Unit* units;
     public:
         void __init__(int n_units,int upper_limit,int lower_limit,
-        int upper_viability, int lower_viability,float* weights_set,int test_interval=10)
+        int upper_viability, int lower_viability,float* weights_set=NULL,
+        int test_interval=10)
         {
-            Unit* units;
-            array<int,6> ar;
+            units = new Unit[n_units];
+            //construct units
             for(int i=0;i<n_units;i++)
             {
-                Unit u;
-                //u.init_Unit();
-                units[i]=u;
+                units[i]= Unit();
+                units[i].init_Unit(test_interval=test_interval,upper_viability,
+                lower_viability,upper_limit,
+                lower_limit,1,1,1,2,1,
+                2.0, 0.0,weights_set);
+            }
+            //connect all units to eachother
+            for(int i=0;i<n_units;i++)
+            {
+                for(int j=0;j<n_units;j++)
+                {
+                    units[i].add_connection(units[j]);
+                }
             }
 
+            //initialise()
+            t=0;
+
+        }
+        //initialise units - this is just to prepare weights_hist, which can only be done
+        //*after* units are connected
+        void initialise()
+        {
+            for(int i=0; sizeof(units);i++)
+            {
+                //units[i].initialise();
+            }
+        }
+        //tep all units in the Homeostat forwards
+        void step(float dt)
+        {
+            for(int i=0; sizeof(units);i++)
+            {
+                units[i].step(dt);
+            }
+            t+=dt;
         }
 };
 
 int main()
 {
-    /*
+
+    
     std::cout<<"start\n";
     Array arr = Array(1);
     for(int i=0;i<10000;i++)
     {
         arr.add(i);
-    }*/
+    }/**/
+    /*
+    int n_units = 1;
+    int upper_limit = 20;
+    int lower_limit = -20;
+    float upper_viability = 1;
+    float lower_viability = -1;
+    float* weights_set = NULL;
+    int test_interval = 10;
+
+    float dt = 0.005;
+    int duration = 100;
+    int count=0;
+    float t=0;
     
-    double number = distribution(generator);
-    std::cout<<number;
+    //create homeostat
+    Homeostat hom = Homeostat();
+    hom.__init__(n_units,upper_limit,lower_limit,upper_viability,lower_viability,weights_set,test_interval);
+
+    while (t < duration) //main loop
+    {
+        //hom.step(dt);
+        t+=dt;
+        count++;
+    }
+    /**/
+    
+
 }
