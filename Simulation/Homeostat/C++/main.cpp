@@ -59,7 +59,8 @@ class Array
 
 class Unit
 {
-    int m,k,l,p,q,t,timer,self_ind=0;
+    int m,k,l,p,q,self_ind=0;
+    float t,timer=0.0;
     float* weights_set;
     int test_interval=0;
     int upper_limit,lower_limit,upper_viability,lower_viability=0;
@@ -125,7 +126,8 @@ class Unit
                     testing=true;
                 }
             }
-
+            t+=dt;
+            timer+=dt;
             return thetas.getLast();
         }
         //get inputs from all connect units, including this unit
@@ -196,6 +198,27 @@ class Unit
                 
             }
             
+        }
+
+};
+//A class to represent a Homeostat, with an arbitrary number of units.
+#include <array>
+class Homeostat
+{
+    float t=0;
+    public:
+        void __init__(int n_units,int upper_limit,int lower_limit,
+        int upper_viability, int lower_viability,float* weights_set,int test_interval=10)
+        {
+            Unit* units;
+            array<int,6> ar;
+            for(int i=0;i<n_units;i++)
+            {
+                Unit u;
+                //u.init_Unit();
+                units[i]=u;
+            }
+
         }
 };
 
