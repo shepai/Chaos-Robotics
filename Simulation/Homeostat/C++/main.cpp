@@ -165,7 +165,7 @@ class Unit
 };
 
 //A class to represent a Homeostat, with an arbitrary number of units.
-#include <array>
+
 class Homeostat
 {
     float t=0;
@@ -221,14 +221,15 @@ class Homeostat
 int main()
 {
 
-    
+    /*
     std::cout<<"start\n";
     Array arr = Array(1);
     for(int i=0;i<10000;i++)
     {
         arr.add(i);
-    }/**/
-    /*
+    }
+    */
+    
     int n_units = 1;
     int upper_limit = 20;
     int lower_limit = -20;
