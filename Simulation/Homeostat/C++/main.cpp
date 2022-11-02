@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <iterator>
 #include "array.cpp"
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 std::random_device rd;
 std::default_random_engine generator(rd()); // rd() provides a random seed
@@ -31,8 +33,9 @@ public:
         int upper_limit = std::numeric_limits<int>::max(),
         int lower_limit = std::numeric_limits<int>::min(),
         int m = 1, int k = 1, int l = 1, int p = 2, int q = 1,
-        float theta0 = 2.0, float theta_dot0 = 0.0, float* weights_set = NULL)
+        float theta0 = 2.0, float theta_dot0 = 0.0)
     {     // Constructor
+        float* weights_set = NULL;
         //set weights
         this->weights_set = weights_set;
         //minimum time to wait between changing the weights
@@ -186,8 +189,8 @@ class Homeostat
     int n_items = 0;
 public:
     Homeostat() = default;
-    void __init__(int n_units, int upper_limit, int lower_limit,
-        int upper_viability, int lower_viability, float* weights_set = NULL,
+    void init(int n_units, int upper_limit, int lower_limit,
+        int upper_viability, int lower_viability,
         int test_interval = 10)
     {
         units = new Unit[n_units];
@@ -200,7 +203,7 @@ public:
             units[i].init_Unit(test_interval = test_interval, upper_viability,
                 lower_viability, upper_limit,
                 lower_limit, 1, 1, 1, 2, 1,
-                2.0, 0.0, weights_set);
+                2.0, 0.0);
 
         }
         float val;
@@ -257,19 +260,40 @@ public:
     }
 };
 
- 
+ namespace py = pybind11;
+PYBIND11_MODULE(homeostat, m) { //loercase for python modules
+    py::class_<Homeostat>(m, "Homeostat")
+        .def(py::init<>())
+        .def("init", &Homeostat::init, "Initialize the initial function", py::arg("n_units"), 
+        py::arg("upper_limit"), py::arg("lower_limit"), py::arg("upper_viability"),py::arg("lower_viability"),
+         py::arg("test_interval"));
+}
+
+ /*
+//step(float dt)
+PYBIND11_MODULE(homeostat, m) { //loercase for python modules
+    py::class_<Homeostat>(m, "Homeostat")
+        .def(py::init<>()),
+        .def("init", &init, "Initialize the initial function", py::arg("n_units"), 
+        py::arg("upper_limit"), py::arg("lower_limit"), py::arg("upper_viability"),
+        py::arg("weights_set"), py::arg("test_interval")),
+        .def("step",&step,"Make a step through the event",py::arg("dt")),
+        .def("updateInputs",[](Homeostat& homeostat)
+            {
+                return py::memoryview::from_memory(homeostat.updateInputs(),sizeof(int));
+            },"Update the inputs and return input sim"); 
+    py::class_<Unit>(m, "Unit")
+        .def(py::init<>()),
+        .def("getTheta",[](Unit& getTheta)
+            {
+                return py::memoryview::from_memory(Unit.getTheta(), Unit.sizeTheta() * sizeof(int));
+            });
+}
+*/
+/*
 
 int main()
 {
-
-    /*
-    std::cout<<"start\n";
-    Array arr = Array(1);
-    for(int i=0;i<10000;i++)
-    {
-        arr.add(i);
-    }
-    */ 
      
     int n_units = 3;
     int upper_limit = 20;
@@ -304,7 +328,6 @@ int main()
         std::cout << "\n>" << vals[i];
     }
       
-    /**/
 
 
-}
+}*/
