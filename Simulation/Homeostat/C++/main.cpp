@@ -232,7 +232,7 @@ public:
 
         t += dt;
     } 
-    float* getUnit(int i=0)
+    float* getUnit(int i=0,int size=10)
     {
         if(getUnitThetaSize(i)==0)
         {
@@ -275,9 +275,9 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
         .def("step",&Homeostat::step,"Make a step through the event",py::arg("dt"))
         .def("updateInputs",&Homeostat::updateInputs)
         .def("getUnit",
-        [](Homeostat & homeostat,int i=0)
+        [](Homeostat & homeostat,int i=0,int size=10)
             {
-                return py::memoryview::from_memory(homeostat.getUnit(),100*sizeof(float));
+                return py::memoryview::from_memory(homeostat.getUnit(i,size),size*sizeof(float));
             });
     py::class_<Unit>(m, "Unit")
         .def(py::init<>());
