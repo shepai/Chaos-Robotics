@@ -265,10 +265,18 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
     py::class_<Homeostat>(m, "Homeostat")
         .def(py::init<>())
         .def("init", &Homeostat::init, "Initialize the initial function", py::arg("n_units"), 
-        py::arg("upper_limit"), py::arg("lower_limit"), py::arg("upper_viability"),py::arg("lower_viability"),
-         py::arg("test_interval"));
+            py::arg("upper_limit"), py::arg("lower_limit"), py::arg("upper_viability"),py::arg("lower_viability"),
+            py::arg("test_interval"))
+        .def("step",&Homeostat::step,"Make a step through the event",py::arg("dt"))
+        .def("updateInputs",&Homeostat::updateInputs)
+        .def("getUnit",
+        [](Homeostat & homeostat,int i=0)
+            {
+                return py::memoryview::from_memory(homeostat.getUnit(),10*sizeof(float));
+            });
     py::class_<Unit>(m, "Unit")
         .def(py::init<>());
+        
 }
 
  /*
