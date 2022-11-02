@@ -53,6 +53,11 @@ public:
     }
     float* getAll()
     {
-        return array_;
+        float* values = new float[head-1];
+        for (int i = 0; i < head-1; i++)
+        {
+            values[i] = array_[i];
+        }
+        return values;
     }
 };

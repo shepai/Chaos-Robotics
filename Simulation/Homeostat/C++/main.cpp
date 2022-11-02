@@ -264,8 +264,15 @@ int main()
         t += dt;
         count++;
     }
-    std::cout << "Done....";
-    std::cout << "..." << hom.getUnit(0);
+    std::cout << "Done...." << count;
+    float* vals = hom.getUnit(0);
+    const int truesize = sizeof(vals) / sizeof(vals[0]); // try to understand this statement what it does -  sizeof returns size in bytes
+    printf("\nSize is %d\n", truesize);
+    for (int i = 0; i < truesize; i++)
+    {
+        std::cout << "\n>" << vals[i];
+    }
+    
     /**/
 
 
