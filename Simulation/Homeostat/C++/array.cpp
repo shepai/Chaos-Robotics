@@ -15,22 +15,32 @@ public:
     }
     void add(float val)
     {
+        
         //add items to head
         if (head >= size)
         {
             //change size
             int newSize = size * 2;
             float* new_ = new float[newSize]; //double size
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < head; i++)
             {
+                
                 new_[i] = array_[i];
             }
+            new_[head] = val;
             size = newSize;
             array_ = new float[size];
-            std::copy(new_, new_, array_);
+            //copy back over
+            for (int i = 0; i < head+1; i++)
+            {
+
+                array_[i]= new_[i];
+            }
+            
         }
         else {
             array_[head] = val;
+            //std::cout << "\nWhat we add: " << array_[head] << "\n";
         }
         head = head + 1;
     }
@@ -45,7 +55,7 @@ public:
     }
     int get_size()
     {
-        return head;
+        return head-1;
     }
     float getLast()
     {
@@ -56,6 +66,7 @@ public:
         float* values = new float[head-1];
         for (int i = 0; i < head-1; i++)
         {
+            
             values[i] = array_[i];
         }
         return values;

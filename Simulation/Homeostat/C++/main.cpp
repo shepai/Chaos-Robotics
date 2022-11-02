@@ -114,7 +114,9 @@ public:
             theta_ = 0;
         }
         //store system variables
+        
         thetas.add(theta);
+        
         theta_dots.add(theta_);
         theta_dotsdots.add(theta__);
 
@@ -123,6 +125,11 @@ public:
     float* getTheta()
     {
         return thetas.getAll();
+    }
+    //return size of theta
+    int sizeTheta()
+    {
+        return thetas.get_size();
     }
     //test to see whether the system's essential variable (theta) is
     //within the chosen limits for viability
@@ -202,10 +209,14 @@ public:
         }
 
         t += dt;
-    }
+    } 
     float* getUnit(int i=0)
     {
         return units[i].getTheta();
+    }
+    int getUnitThetaSize(int i = 0)
+    {
+        return units[i].sizeTheta();
     }
     //update the inputs from outside
     float updateInputs()
@@ -227,7 +238,7 @@ public:
     }
 };
 
-
+ 
 
 int main()
 {
@@ -239,8 +250,8 @@ int main()
     {
         arr.add(i);
     }
-    */
-
+    */ 
+     
     int n_units = 1;
     int upper_limit = 20;
     int lower_limit = -20;
@@ -250,10 +261,10 @@ int main()
     int test_interval = 10;
 
     float dt = 0.005;
-    int duration = 100;
+    int duration = 10; 
     int count = 0;
     float t = 0;
-
+     
     //create homeostat
     Homeostat hom = Homeostat();
     hom.__init__(n_units, upper_limit, lower_limit, upper_viability, lower_viability, weights_set, test_interval);
@@ -265,14 +276,15 @@ int main()
         count++;
     }
     std::cout << "Done...." << count;
-    float* vals = hom.getUnit(0);
-    const int truesize = sizeof(vals) / sizeof(vals[0]); // try to understand this statement what it does -  sizeof returns size in bytes
+    float* vals = hom.getUnit(0); 
+    int truesize = hom.getUnitThetaSize(0);
     printf("\nSize is %d\n", truesize);
+    std::cout << "\n>" << vals[0];
     for (int i = 0; i < truesize; i++)
     {
         std::cout << "\n>" << vals[i];
     }
-    
+      
     /**/
 
 
