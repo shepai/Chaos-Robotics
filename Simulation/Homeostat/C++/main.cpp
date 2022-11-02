@@ -234,6 +234,11 @@ public:
     } 
     float* getUnit(int i=0)
     {
+        if(getUnitThetaSize(i)==0)
+        {
+            float* ar=new float[1];
+            return ar;
+        }
         return units[i].getTheta();
     }
     int getUnitThetaSize(int i = 0)
@@ -272,7 +277,7 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
         .def("getUnit",
         [](Homeostat & homeostat,int i=0)
             {
-                return py::memoryview::from_memory(homeostat.getUnit(),10*sizeof(float));
+                return py::memoryview::from_memory(homeostat.getUnit(),100*sizeof(float));
             });
     py::class_<Unit>(m, "Unit")
         .def(py::init<>());
