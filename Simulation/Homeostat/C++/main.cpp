@@ -23,6 +23,7 @@ class Unit
     bool testing;
     Unit* units;
     Array weights;
+    int units_num=0;
     Array thetas, theta_dots, theta_dotsdots;
 public:
     Unit() = default;
@@ -150,7 +151,7 @@ public:
         //implement random selector
         for (int i = 0; i < weights.get_size(); i++)
         {
-            if ((self_ind) && i == self_ind)
+            if (i == self_ind)
             {
                 weights.change(i, -1 * abs(weights.get(i) + distribution(generator)));
             }
@@ -166,6 +167,8 @@ public:
         //units = new Unit[sizeof(unit)];
         //units = unit;
         weights.add(weight);
+        self_ind = units_num;
+        units_num+=1;
     }
     //gather the weights per neuron
     float* getWeights()
@@ -208,6 +211,7 @@ public:
         }
         float val;
         //initialise()
+        //add a series of weights to each unit for x amunt of units
         for (int i = 0; i < n_units; i++)
         {
             for (int j = 0; j < n_units; j++)
@@ -232,6 +236,9 @@ public:
 
         t += dt;
     } 
+    //return a float array of values generated as get theta values generated
+    //@param i for the index of the unit
+    //@param size for the expected size of the array, this is only relevant for the python conversion
     float* getUnit(int i=0,int size=10)
     {
         if(getUnitThetaSize(i)==0)
@@ -241,6 +248,8 @@ public:
         }
         return units[i].getTheta();
     }
+    //return the size of the theta array
+    //@param i for the index of the unit
     int getUnitThetaSize(int i = 0)
     {
         return units[i].sizeTheta();
@@ -251,7 +260,7 @@ public:
         float inputSum = 0.0;
         int count = 0;
         Array inputs = Array(sizeof(units));
-        
+        //loop through all the inputs and save them
         for (int i = 0; i < n_items; i++)
         {
             //std::cout << "\nweight" << units[i].getWeightArray().get(i);
