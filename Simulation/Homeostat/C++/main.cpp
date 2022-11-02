@@ -88,6 +88,12 @@ public:
                 testing = true;
             }
         }
+
+        if (timer > test_interval)
+        {//reset timer
+            timer = 0;
+            testing = false;
+        }
         t += dt;
         timer += dt;
         return thetas.getLast();
@@ -102,9 +108,9 @@ public:
     void integrate(float dt, float input_sum)
     {
         //integrate the system
-        float theta__ = k * theta_dots.getLast() + (l * (p - q) * input_sum);
-        float theta_ = theta_dots.getLast() + (theta_dotsdots.getLast() * dt);
-        float theta = thetas.getLast() + theta_dots.getLast() * dt;
+        float theta__ = (k * theta_dots.getLast()) + (l * (p - q) * input_sum);
+        float theta_ = (theta_dots.getLast()) + (theta_dotsdots.getLast() * dt);
+        float theta = (thetas.getLast()) +(theta_dots.getLast() * dt);
 
         //enforce the limits 
         if (theta > upper_limit)
@@ -145,13 +151,12 @@ public:
         }
         return true;
     }
-    void adjust_weights(float dt)
-        //a function to randomise a Unit's weights
+    void adjust_weights(float dt) //a function to randomise a Unit's weights
     {
         //implement random selector
         for (int i = 0; i < weights.get_size()+1; i++)
         {
-            if (i == self_ind)
+            if (self_ind>0 && i == self_ind)
             {
                 weights.change(i, -1 * abs(weights.get(i) + distribution(generator)));
             }
