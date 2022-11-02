@@ -15,7 +15,6 @@ public:
     }
     void add(float val)
     {
-        
         //add items to head
         if (head >= size)
         {

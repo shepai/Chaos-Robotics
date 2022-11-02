@@ -119,7 +119,6 @@ public:
         
         theta_dots.add(theta_);
         theta_dotsdots.add(theta__);
-
     }
     //return theta stuff
     float* getTheta()
@@ -159,10 +158,21 @@ public:
         }
 
     }
-    void add_connections(Unit* unit)
+    void add_connections(float weight)
     {
         //units = new Unit[sizeof(unit)];
-        units = unit;
+        //units = unit;
+        weights.add(weight);
+    }
+    //gather the weights per neuron
+    float* getWeights()
+    {
+        return weights.getAll();
+    }
+    //gather the weights per neuron
+    Array getWeightArray()
+    {
+        return weights;
     }
 
 };
@@ -191,10 +201,19 @@ public:
                 lower_viability, upper_limit,
                 lower_limit, 1, 1, 1, 2, 1,
                 2.0, 0.0, weights_set);
-            
-        }
 
+        }
+        float val;
         //initialise()
+        for (int i = 0; i < n_units; i++)
+        {
+            for (int j = 0; j < n_units; j++)
+            {
+                val = distribution(generator);
+                units[i].add_connections(val);
+            }
+        }
+        
         t = 0;
 
     }
@@ -227,8 +246,8 @@ public:
         
         for (int i = 0; i < n_items; i++)
         {
-            
-            float calc = units[i].get_theta(); //* weights.get(i);
+            //std::cout << "\nweight" << units[i].getWeightArray().get(i);
+            float calc = units[i].get_theta()* units[i].getWeightArray().get(i);
             inputs.add(calc);
             inputSum += inputs.getLast(); //get last item
 
@@ -252,7 +271,7 @@ int main()
     }
     */ 
      
-    int n_units = 1;
+    int n_units = 3;
     int upper_limit = 20;
     int lower_limit = -20;
     float upper_viability = 1;
@@ -261,10 +280,10 @@ int main()
     int test_interval = 10;
 
     float dt = 0.005;
-    int duration = 10; 
+    int duration = 100; 
     int count = 0;
     float t = 0;
-     
+    std::cout << "Make homeostat\n";
     //create homeostat
     Homeostat hom = Homeostat();
     hom.__init__(n_units, upper_limit, lower_limit, upper_viability, lower_viability, weights_set, test_interval);
@@ -275,11 +294,11 @@ int main()
         t += dt;
         count++;
     }
-    std::cout << "Done...." << count;
+    
     float* vals = hom.getUnit(0); 
     int truesize = hom.getUnitThetaSize(0);
     printf("\nSize is %d\n", truesize);
-    std::cout << "\n>" << vals[0];
+    
     for (int i = 0; i < truesize; i++)
     {
         std::cout << "\n>" << vals[i];
