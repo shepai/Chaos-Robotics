@@ -27,7 +27,6 @@ t = 0
 ts = [t]
 dt = 0.05
 duration = 100
-
 # construct Homeostat
 homeostat = Homeostat(n_units=n_units, upper_limit=upper_limit, lower_limit=lower_limit, upper_viability=upper_viability, lower_viability=lower_viability, adapt_fun=adapt_fun, weights_set=weights_set, test_interval=test_interval)
 

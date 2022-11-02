@@ -149,7 +149,7 @@ public:
         //a function to randomise a Unit's weights
     {
         //implement random selector
-        for (int i = 0; i < weights.get_size(); i++)
+        for (int i = 0; i < weights.get_size()+1; i++)
         {
             if (i == self_ind)
             {
