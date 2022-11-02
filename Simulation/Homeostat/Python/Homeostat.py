@@ -15,7 +15,11 @@ def random_in_interval(minimum: float=0, maximum: float=1) -> float:
     return (width * np.random.random()) + minimum
 class Unit:
 
-    def __init__(self, test_interval, adapt_fun, upper_viability=1, lower_viability=-1, upper_limit=np.Inf, lower_limit=-np.Inf, m=1, k=1, l=1, p=2, q=1, theta0=2, theta_dot0=0, weights_set=None):
+    def __init__(self, test_interval, 
+    adapt_fun, upper_viability=1, 
+    lower_viability=-1, upper_limit=np.Inf, 
+    lower_limit=-np.Inf, m=1, k=1, l=1, p=2, q=1, 
+    theta0=2, theta_dot0=0, weights_set=None):
 
         # Ashby's homeostat used a discrete set of weights. If we want
         # to do that, we need to pass a list of weights into here, and
@@ -190,12 +194,17 @@ class Unit:
 '''
 class Homeostat:
 
-    def __init__(self, n_units, upper_limit, lower_limit, upper_viability, lower_viability, adapt_fun, weights_set=None, test_interval=10):
+    def __init__(self, n_units, upper_limit, 
+    lower_limit, upper_viability, lower_viability, 
+    adapt_fun, weights_set=None, test_interval=10):
 
         # construct units
         self.units = []
         for _ in range(n_units):
-            self.units.append(Unit(test_interval=test_interval, adapt_fun=adapt_fun, upper_limit=upper_limit, lower_limit=lower_limit, upper_viability=upper_viability, lower_viability=lower_viability, weights_set=weights_set))
+            self.units.append(Unit(test_interval=test_interval, adapt_fun=adapt_fun, 
+            upper_limit=upper_limit, lower_limit=lower_limit, 
+            upper_viability=upper_viability, 
+            lower_viability=lower_viability, weights_set=weights_set))
 
         # connect all units to each other
         for unit in self.units:

@@ -9,7 +9,7 @@ sys.path.insert(1, '../..')
 from Homeostat import *
 
 # Homeostat parameters
-n_units = 2
+n_units = 1
 upper_limit = 20
 lower_limit = -20
 upper_viability = 1
@@ -26,26 +26,28 @@ test_interval = 10
 t = 0
 ts = [t]
 dt = 0.05
-duration = 500
+duration = 100
 
 # construct Homeostat
 homeostat = Homeostat(n_units=n_units, upper_limit=upper_limit, lower_limit=lower_limit, upper_viability=upper_viability, lower_viability=lower_viability, adapt_fun=adapt_fun, weights_set=weights_set, test_interval=test_interval)
 
 # randomise parameters for system equations
 # homeostat.randomise_params()
-
+count=0
 # main Homeostat simulation loop
 while t < duration:
     homeostat.step(dt)
     t += dt
     ts.append(t)
-
+    count+=1
+print(count+1)
 # plot Homeostat essential variables and weights over time
 fig, ax = plt.subplots(2, 1)
 
 # plot all homeostat unit variables over time
 for i, unit in enumerate(homeostat.units):
     ax[0].plot(ts, unit.thetas, label='Unit ' + str(i) + ': essential variable')
+    print(len(unit.thetas))
 ax[0].plot([ts[0], ts[-1]], [upper_viability, upper_viability], 'r--', label='upper viable boundary')
 ax[0].plot([ts[0], ts[-1]], [lower_viability, lower_viability], 'g--', label='lower viable boundary')
 ax[0].set_title('Essential variables')
@@ -64,3 +66,5 @@ ax[1].set_ylabel('Weight')
 ax[1].legend()
 
 plt.show()
+
+

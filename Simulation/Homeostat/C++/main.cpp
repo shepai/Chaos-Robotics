@@ -267,6 +267,8 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
         .def("init", &Homeostat::init, "Initialize the initial function", py::arg("n_units"), 
         py::arg("upper_limit"), py::arg("lower_limit"), py::arg("upper_viability"),py::arg("lower_viability"),
          py::arg("test_interval"));
+    py::class_<Unit>(m, "Unit")
+        .def(py::init<>());
 }
 
  /*
