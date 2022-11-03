@@ -131,7 +131,6 @@ class Unit:
             input_sum += inputs[-1]
         # keep record of inputs
         self.inputs_hist.append(inputs)
-
         return input_sum
 
     # integrate system's dynamics
@@ -180,7 +179,7 @@ class Unit:
         self.units.append(unit)
         # add connection weight to weights list
         self.weights.append(weight)
-
+        
         if unit == self:
             self.self_ind = len(self.units) - 1
 
@@ -244,7 +243,6 @@ def random_val(dt, inputs_hist, weights_hist, thetas, theta_dots, weights_set=[]
     weights = []
     for _ in range(len(weights_hist[0])): #loop through the size of how many weights there were at the start
         weights.append(random_in_interval(-1, 1))
-
     if self_ind:
         weights[self_ind] = - np.abs(weights[self_ind])
 
