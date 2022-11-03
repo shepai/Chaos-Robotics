@@ -101,8 +101,8 @@ public:
     
     float get_theta()
     {
-        int pin = thetas.get_size();
-        return thetas.get(pin-1); //get last added
+        //int pin = thetas.get_size();
+        return thetas.getLast(); //get last added
     }
     //integrate system's dynamics
     void integrate(float dt, float input_sum)
