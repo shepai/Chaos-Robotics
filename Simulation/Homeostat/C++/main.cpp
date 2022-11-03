@@ -108,7 +108,7 @@ public:
     void integrate(float dt, float input_sum)
     {
         //integrate the system
-        float theta__ = (k * theta_dots.getLast()) + (l * (p - q) * input_sum);
+        float theta__ = (-1 *k * theta_dots.getLast()) + (l * (p - q) * input_sum);
         float theta_ = (theta_dots.getLast()) + (theta_dotsdots.getLast() * dt);
         float theta = (thetas.getLast()) +(theta_dots.getLast() * dt);
 
@@ -266,10 +266,11 @@ public:
         int count = 0;
         Array inputs = Array(sizeof(units));
         //loop through all the inputs and save them
+        float calc;
         for (int i = 0; i < n_items; i++)
         {
             //std::cout << "\nweight" << units[i].getWeightArray().get(i);
-            float calc = units[i].get_theta()* units[i].getWeightArray().get(i);
+            calc = units[i].get_theta()* units[i].getWeightArray().get(i);
             inputs.add(calc);
             inputSum += inputs.getLast(); //get last item
 
