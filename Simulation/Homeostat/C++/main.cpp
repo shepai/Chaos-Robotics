@@ -104,6 +104,11 @@ public:
         //int pin = thetas.get_size();
         return thetas.getLast(); //get last added
     }
+    //set the unit value for the ind
+    void setInd(int ind)
+    {
+        self_ind = self_ind;
+    }
     //integrate system's dynamics
     void integrate(float dt, float input_sum)
     {
@@ -156,7 +161,7 @@ public:
         //implement random selector
         for (int i = 0; i < weights.get_size()+1; i++)
         {
-            if (self_ind>0 && i == self_ind)
+            if (i == self_ind)
             {
                 weights.change(i, -1 * abs(weights.get(i) + distribution(generator)));
             }
@@ -184,6 +189,11 @@ public:
     Array getWeightArray()
     {
         return weights;
+    }
+    //reset the connections
+    void resetConnections()
+    {
+        weights = Array(1);
     }
 
 };
@@ -228,6 +238,21 @@ public:
         
         t = 0;
 
+    }
+    //reset the weights to a new random distribution
+    void resetWeights(int start,int end)
+    {
+        std::uniform_real_distribution<double> distribution(start, end);
+        int val = 0;
+        for (int i = 0; i < n_items; i++)
+        {
+            units[i].resetConnections();
+            for (int j = 0; j < n_items; j++)
+            {
+                val = distribution(generator);
+                units[i].add_connections(val);
+            }
+        }
     }
     
     //tep all units in the Homeostat forwards
@@ -289,13 +314,15 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
             py::arg("test_interval"))
         .def("step",&Homeostat::step,"Make a step through the event",py::arg("dt"))
         .def("updateInputs",&Homeostat::updateInputs)
+        .def("resetWeights",&Homeostat::resetWeights,"Reset the weights to a new distribution",py::arg("start"),py::arg("end"))
         .def("getUnit",
         [](Homeostat & homeostat,int i=0,int size=10)
             {
                 return py::memoryview::from_memory(homeostat.getUnit(i,size),size*sizeof(float));
             });
     py::class_<Unit>(m, "Unit")
-        .def(py::init<>());
+        .def(py::init<>())
+        .def("step",&Unit::setInd,"Set the index to gather and negate",py::arg("i"));
         
 }
 
