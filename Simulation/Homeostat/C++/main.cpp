@@ -266,6 +266,23 @@ public:
 
         t += dt;
     } 
+    //step with the input instead of previous theta
+    void step_var(float dt,float input)
+    {
+        float sum= 0.0;
+        int count = 0;
+        for (int i = 0; i < n_items; i++)
+        {
+            sum += input+units[i].get_theta() * units[i].getWeightArray().get(i);; //get last item
+
+        }
+        for (int i = 0; i < n_items; i++)
+        {
+            units[i].step(dt, sum);
+        }
+
+        t += dt;
+    }
     //return a float array of values generated as get theta values generated
     //@param i for the index of the unit
     //@param size for the expected size of the array, this is only relevant for the python conversion
@@ -315,6 +332,7 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
         .def("step",&Homeostat::step,"Make a step through the event",py::arg("dt"))
         .def("updateInputs",&Homeostat::updateInputs)
         .def("resetWeights",&Homeostat::resetWeights,"Reset the weights to a new distribution",py::arg("start"),py::arg("end"))
+        .def("step_var",&Homeostat::step_var,"Step through homeostat based on variable",py::arg("dt"),py::arg("input"))
         .def("getUnit",
         [](Homeostat & homeostat,int i=0,int size=10)
             {
