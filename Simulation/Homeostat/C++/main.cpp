@@ -273,7 +273,7 @@ public:
         int count = 0;
         for (int i = 0; i < n_items; i++)
         {
-            sum += input+units[i].get_theta() * units[i].getWeightArray().get(i);; //get last item
+            sum += input*units[i].get_theta() * units[i].getWeightArray().get(i);; //get last item
 
         }
         for (int i = 0; i < n_items; i++)
