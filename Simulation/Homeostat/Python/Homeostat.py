@@ -55,7 +55,7 @@ class Unit:
         self.testing_hist = [self.testing] # a record of when the unit is adapting
         self.inputs_hist = [] # a record of all inputs to a unit over time, including the feedback from the unit itself
         self.adapt_fun = adapt_fun #
-        self.self_ind = 1 # used to be able to set the unit's feedback connection to always be negative
+        self.self_ind = 0 # used to be able to set the unit's feedback connection to always be negative
         self.test_times = [] # times when the unit starts testing new weights
         self.timer = 0 # a timer for how long to wait after changing a unit's weights
 
