@@ -11,7 +11,7 @@ p=cv.imread(folder+items[0])
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'dynamicalSignal.avi',cv.VideoWriter_fourcc(*'DIVX'), 30, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'homeostatLowGrav.avi',cv.VideoWriter_fourcc(*'DIVX'), 30, (w,h))
 
 
 #sort
