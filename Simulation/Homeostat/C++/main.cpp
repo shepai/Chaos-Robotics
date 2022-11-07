@@ -19,7 +19,7 @@ class Unit
     float t, timer = 0.0;
     float* weights_set;
     int test_interval = 0;
-    int upper_limit, lower_limit, upper_viability, lower_viability = 0;
+    float upper_limit, lower_limit, upper_viability, lower_viability = 0;
     bool testing;
     Unit* units;
     Array weights;
@@ -29,10 +29,10 @@ public:
     Unit() = default;
 
     void init_Unit(int test_interval,
-        int upper_viability,
-        int lower_viability,
-        int upper_limit = std::numeric_limits<int>::max(),
-        int lower_limit = std::numeric_limits<int>::min(),
+        float upper_viability,
+        float lower_viability,
+        float upper_limit = std::numeric_limits<float>::max(),
+        float lower_limit = std::numeric_limits<float>::min(),
         int m = 1, int k = 1, int l = 1, int p = 2, int q = 1,
         float theta0 = 2.0, float theta_dot0 = 0.0)
     {     // Constructor
@@ -207,8 +207,8 @@ class Homeostat
     int n_items = 0;
 public:
     Homeostat() = default;
-    void init(int n_units, int upper_limit, int lower_limit,
-        int upper_viability, int lower_viability,
+    void init(int n_units, float upper_limit, float lower_limit,
+        float upper_viability, float lower_viability,
         int test_interval = 10)
     {
         units = new Unit[n_units];
