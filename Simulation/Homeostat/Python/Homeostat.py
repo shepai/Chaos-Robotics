@@ -1,9 +1,6 @@
-import sys
 import numpy as np
 import math
-# relative path to folder which contains the Sandbox module
-sys.path.insert(1, '../..')
-#from Sandbox import *
+
 
 '''
     A class to simulate a single unit in a simulation of Ashby's Homeostat machine.
@@ -68,11 +65,11 @@ class Unit:
     # (i.e. all parameters apart from the connection weights)
     def randomise_params(self):
 
-        self.m = random_in_interval(minimum=0.1, maximum=2)
-        self.k = random_in_interval(minimum=0.1, maximum=2)
-        self.l = random_in_interval(minimum=0.1, maximum=2)
-        self.q = random_in_interval(minimum=0.1, maximum=1)
-        self.p = self.q + random_in_interval(minimum=0.1, maximum=2)
+        self.m = random_in_interval(minimum=0.1, maximum=5)
+        self.k = random_in_interval(minimum=0.1, maximum=5)
+        self.l = random_in_interval(minimum=0.1, maximum=5)
+        self.q = random_in_interval(minimum=0.1, maximum=5)
+        self.p = self.q + random_in_interval(minimum=0.1, maximum=5)
 
         print("***** Randomising homeostat unit params *****")
         print("m", self.m)
@@ -195,7 +192,7 @@ class Homeostat:
 
     def __init__(self, n_units, upper_limit, 
     lower_limit, upper_viability, lower_viability, 
-    adapt_fun, weights_set=None, test_interval=10):
+    adapt_fun, weights_set=None, test_interval=10,m=1, k=1, l=1, p=2, q=1):
 
         # construct units
         self.units = []
@@ -203,7 +200,7 @@ class Homeostat:
             self.units.append(Unit(test_interval=test_interval, adapt_fun=adapt_fun, 
             upper_limit=upper_limit, lower_limit=lower_limit, 
             upper_viability=upper_viability, 
-            lower_viability=lower_viability, weights_set=weights_set))
+            lower_viability=lower_viability, weights_set=weights_set,m=m, k=k, l=l, p=p, q=q))
 
         # connect all units to each other
         for unit in self.units:
@@ -217,8 +214,10 @@ class Homeostat:
         self.t = 0
 
     # step all units in the Homeostat forwards
-    def step(self, dt):
+    def step(self, dt,c=1):
         for unit in self.units:
+            if c%10 == 0:
+                unit.randomise_params()
             unit.step(dt)
         # update clock
         self.t += dt

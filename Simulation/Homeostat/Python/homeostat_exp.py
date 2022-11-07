@@ -1,10 +1,6 @@
-import sys
+
 import copy as cp
 import matplotlib.pyplot as plt
-
-# relative path to folder which contains the Sandbox module
-sys.path.insert(1, '../..')
-#from Sandbox import *
 
 from Homeostat import *
 
@@ -28,14 +24,15 @@ ts = [t]
 dt = 0.05
 duration = 100
 # construct Homeostat
-homeostat = Homeostat(n_units=n_units, upper_limit=upper_limit, lower_limit=lower_limit, upper_viability=upper_viability, lower_viability=lower_viability, adapt_fun=adapt_fun, weights_set=weights_set, test_interval=test_interval)
+homeostat = Homeostat(n_units=n_units, upper_limit=upper_limit, lower_limit=lower_limit, upper_viability=upper_viability, 
+lower_viability=lower_viability, adapt_fun=adapt_fun, weights_set=weights_set, test_interval=test_interval,m=5, k=2, l=1, p=1, q=5)
 
 # randomise parameters for system equations
 # homeostat.randomise_params()
 count=0
 # main Homeostat simulation loop
 while t < duration:
-    homeostat.step(dt)
+    homeostat.step(dt,c=count)
     t += dt
     ts.append(t)
     count+=1
