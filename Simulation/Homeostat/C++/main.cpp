@@ -295,11 +295,28 @@ public:
         }
         return units[i].getTheta();
     }
+    //return a float array of values generated as weights
+    //@param i for the index of the unit
+    //@param size for the expected size of the array, this is only relevant for the python conversion
+    float* getWeight(int i=0,int size=10)
+    {
+        if(getUnitWeightSize(i)==0)
+        {
+            float* ar=new float[1];
+            return ar;
+        }
+        return units[i].getWeights();
+    }
     //return the size of the theta array
     //@param i for the index of the unit
     int getUnitThetaSize(int i = 0)
     {
         return units[i].sizeTheta();
+    }
+
+    int getUnitWeightSize(int i = 0)
+    {
+        return units[i].getWeightArray().get_size();
     }
     //update the inputs from outside
     float updateInputs()
@@ -337,6 +354,11 @@ PYBIND11_MODULE(homeostat, m) { //loercase for python modules
         [](Homeostat & homeostat,int i=0,int size=10)
             {
                 return py::memoryview::from_memory(homeostat.getUnit(i,size),size*sizeof(float));
+            })
+        .def("getWeight",
+        [](Homeostat & homeostat,int i=0,int size=10)
+            {
+                return py::memoryview::from_memory(homeostat.getWeight(i,size),size*sizeof(float));
             });
     py::class_<Unit>(m, "Unit")
         .def(py::init<>())

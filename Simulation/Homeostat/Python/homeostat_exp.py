@@ -8,8 +8,8 @@ from Homeostat import *
 n_units = 1
 upper_limit = 20
 lower_limit = -20
-upper_viability = 1
-lower_viability = -1
+upper_viability = 10
+lower_viability = 5
 adapt_fun = random_val
 weights_set = None
 test_interval = 10

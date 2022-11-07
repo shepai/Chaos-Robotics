@@ -17,7 +17,7 @@ sensory_want=np.zeros((size,))+noise#np.random.normal(5,0.5,(size,))
 sig=np.zeros((size,))
 def show_gen_control(sensory_sig,sensory_want,a,b,sig):
     for i in range(size):
-        I=(sensory_sig[i]-sensory_want[i])*maths.log(1+(maths.e**(a)))+(sensory_want[i]+b)
+        I=(sensory_sig[i]-np.average(sensory_sig[i]))*maths.log(1+(maths.e**(a)))+(np.average(sensory_sig[i])+b)
         sig[i]=I
     return sig
 # Create the figure and the line that we will manipulate
