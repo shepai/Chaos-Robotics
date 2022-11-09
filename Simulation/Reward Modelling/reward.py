@@ -57,7 +57,7 @@ def sigmoid(x):
 
 def step(i,t,mus,Cp,x,j):
     p=pp
-    mus[t+1]=(mus[t-1]**p)+lambda_*(((x[0][t-1]-x[0][t-1-p])**2+(x[1][t]-x[1][t-1-p])**2)/p)
+    mus[t+1]=(mus[t-1]**p)+lambda_*(((x[0][t-1]-x[0][t-1-p])**2+(x[1][t-1]-x[1][t-1-p])**2)/p)
     Cp[i][t]=(mus[t])*((weights[i][i]*(x[i][t]-x[i][t-p]))+(weights[i][j]*(x[j][t]-x[j][t-p])))
     a=sigmoid(thetas[i]+(weights[i][i]*x[i][t])+(weights[i][j]*x[j][t])+Cp[i][t])
     x[i][t+1]=a
