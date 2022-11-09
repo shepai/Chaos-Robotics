@@ -2,30 +2,78 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 import math as maths
-
+import random
 
 # Define initial parameters
 a=5
 b=2
-size=100
-noise=0.5
-noises=0.5
-sensory_sig=np.random.normal(5,noises,(size,))
-sensory_want=np.zeros((size,))+noise#np.random.normal(5,0.5,(size,))
+steps=650
+lambda_=0.05
+dt=0.01
+pp=1
 
-#t = np.linspace(0, 1, size)
-sig=np.zeros((size,))
-def show_gen_control(sensory_sig,sensory_want,a,b,sig):
-    for i in range(size):
-        I=(sensory_sig[i]-np.average(sensory_sig[i]))*maths.log(1+(maths.e**(a)))+(np.average(sensory_sig[i])+b)
-        sig[i]=I
-    return sig
+mus=np.zeros((steps,))
+mus[0]=-1
+x=np.zeros((2,steps))
+x[0][0]=random.randint(0,2)
+x[1][0]=random.randint(0,2)
+Cp=np.zeros((2,steps))
+Cp[0][0]=1
+Cp[1][0]=1
+thetas=np.random.random((2,1)) #bias terms
+weights=np.random.random((2,2))
+lower=1
+outputs=np.zeros((2,steps))
+
+
+def show_gen_control():
+    mus=np.zeros((steps,))
+    mus[0]=-1
+    x=np.zeros((2,steps))
+    x[0][0]=random.randint(0,2)
+    x[1][0]=random.randint(0,2)
+    Cp=np.zeros((2,steps))
+    Cp[0][0]=1
+    Cp[1][0]=1
+    
+    outputs=np.zeros((2,steps))
+
+    for st in range(steps-2):
+        """if i%1==0: #random inputs
+            x[0][t+1]=random.randint(-3,3)
+            x[1][t+1]=random.randint(-3,3)"""
+        t=st+1
+        step(0,t,mus,Cp,x,1)
+        step(1,t,mus,Cp,x,0)
+        outputs[0][t]=x[0][t+1]
+        outputs[1][t]=x[1][t+1]
+    
+    return outputs[:,1:]
+
+#implementing this with random generation
+
+def sigmoid(x):
+    return (lower-1)+(1/(1+np.exp(-1*x)))
+
+def step(i,t,mus,Cp,x,j):
+    p=pp
+    mus[t+1]=(mus[t]**p)+lambda_*(((x[0][t]-x[0][t-p])**2+(x[1][t]-x[1][t-p])**2)/p)
+    Cp[i][t]=(mus[t])*((weights[i][i]*(x[i][t]-x[i][t-p]))+(weights[i][j]*(x[j][t]-x[j][t-p])))
+    a=sigmoid(thetas[i]+(weights[i][i]*x[i][t])+(weights[i][j]*x[j][t])+Cp[i][t])
+    x[i][t+1]=a
+    
+
+
+
+
 # Create the figure and the line that we will manipulate
 fig, ax = plt.subplots()
 #fig.subplots_adjust(left=0.05, bottom=0.15, right=0.95, top=0.98, wspace=0.05, hspace=0.05)
-line, = ax.plot(show_gen_control(sensory_sig,sensory_want,a,b,sig), lw=2)
+out=show_gen_control()
+avg_out=((out[0]+out[1])/2)[:-1]
+line, = ax.plot(avg_out, lw=2)
 ax.set_xlabel('Iteration')
-
+ax.set_ylim(0,1)
 # adjust the main plot to make room for the sliders
 fig.subplots_adjust(left=0.25, bottom=0.25)
 
@@ -34,60 +82,39 @@ axfreq = fig.add_axes([0.1, 0.1, 0.65, 0.03])
 
 freq_slider = Slider(
     ax=axfreq,
-    label='alpha',
+    label='lambda',
     valmin=0.1,
-    valmax=100,
-    valinit=a,
+    valmax=1,
+    valinit=lambda_,
 )
 
 # Make a vertically oriented slider to control the amplitude
 axamp = fig.add_axes([0.1, 0.15, 0.65, 0.03])
 amp_slider = Slider(
     ax=axamp,
-    label="beta",
-    valmin=0,
-    valmax=100,
-    valinit=b,
-)
-
-# Make a vertically oriented slider to control the amplitude
-axA = fig.add_axes([0.15, 0.25, 0.0225, 0.63])
-
-sens_slider = Slider(
-    ax=axA ,
-    label="s_hat",
-    valmin=0,
+    label="p",
+    valmin=1,
     valmax=10,
-    valinit=noise,
-    orientation="vertical"
+    valinit=pp,
 )
 
-axB = fig.add_axes([0.2, 0.25, 0.0225, 0.63])
 
-sens_sliderB = Slider(
-    ax=axB ,
-    label="s",
-    valmin=0,
-    valmax=10,
-    valinit=noises,
-    orientation="vertical"
-)
 # The function to be called anytime a slider's value changes
 def update(val):
-    line.set_ydata(show_gen_control(sensory_sig,sensory_want, freq_slider.val, amp_slider.val,sig))
+    global lambda_
+    global pp
+    lambda_ = freq_slider.val
+    pp=int(amp_slider.val)
+    outputs=show_gen_control()
+    avg_out=((outputs[0]+outputs[1])/2)[:-1]
+    line.set_ydata(avg_out)
     fig.canvas.draw_idle()
 
-def updateNoise(val):
-    global sensory_want
-    global sensory_sig
-    sensory_want=np.random.normal(5,sens_slider.val,(size,))#np.zeros((size,))+sens_slider.val#np.random.normal(5,0.5,(size,))
-    sensory_sig=np.random.normal(5,sens_sliderB.val,(size,))
-    update(val)
+
 # register the update function with each slider
 freq_slider.on_changed(update)
 amp_slider.on_changed(update)
-sens_slider.on_changed(updateNoise)
-sens_sliderB.on_changed(updateNoise)
+
 # Create a `matplotlib.widgets.Button` to reset the sliders to initial values.
 resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
 button = Button(resetax, 'Reset', hovercolor='0.975')
