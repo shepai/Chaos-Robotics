@@ -7,10 +7,12 @@ from mpremote import pyboard
 import serial, time
 import sys
 import glob
+from multiprocessing import Process
 
 """
 Setup control with micropython device
 """
+
 class Board:
     def __init__(self):
         self.COM=None
@@ -56,7 +58,10 @@ class Board:
             except (OSError, serial.SerialException):
                 pass
         return result
-
+    def move(self,motor,angle):
+        self.COM.exec_raw_no_follow('motorMove('+str(motor)+'+'+str(angle)+')') 
+    def close(self):
+        self.COM.close()
 
 
 
@@ -125,80 +130,109 @@ def step_e(i,t,mus,Cp,x,j):
     x[j][t+1]=sigmoid(thetas[j]+a[j]+Cp[j][t])
     return x
     
+def sender(arr,com):
+    #arr,B=arr[0],arr[1]
+    B=Board()
+    B.connect(com)
+    B.runFile(fileToRun="C:/Users/dexte/github/Chaos-Robotics/Hardware/Motor control/main_program.py") #load the file that we want for motor control 
+    for i in range(len(arr)):
+        print("moving 1 to ",180*arr[i])
+        B.move(1,180*arr[i])
+        time.sleep(0.5)
+
+if __name__ == '__main__':
+    B=Board()
+    #get serial boards and connect to first one
+    COM=""
+    while COM=="":
+        try:
+            res=B.serial_ports()
+            print("ports:",res)
+            B.connect(res[0])
+            COM=res[0]
+            B.close()
+        except IndexError:
+            time.sleep(1)
+
+    
+    print("Starting")
+    # Create the figure and the line that we will manipulate
+    fig, ax = plt.subplots()
+    #fig.subplots_adjust(left=0.05, bottom=0.15, right=0.95, top=0.98, wspace=0.05, hspace=0.05)
+    out,x=show_gen_control()
+    avg_out=((out[0]+out[1])/2)[:-1]
+    line, = ax.plot(avg_out, lw=2)
+    line2, = ax.plot(x[0],c="r",label="neuron 2", lw=2)
+    line3, = ax.plot(x[1],c="b",label="neuron 1", lw=2)
+    p=Process(target=sender, args=[avg_out,COM]) #start playing
+    p.start()
+    
+    ax.set_xlabel('Iteration +600')
+    ax.set_ylabel('Neuron output')
+    ax.set_ylim(0,1)
+    ax.legend(loc="lower right")
+    # adjust the main plot to make room for the sliders
+    fig.subplots_adjust(left=0.25, bottom=0.25)
+
+    # Make a horizontal slider to control the frequency.
+    axfreq = fig.add_axes([0.1, 0.1, 0.65, 0.03])
+
+    freq_slider = Slider(
+        ax=axfreq,
+        label='lambda',
+        valmin=0.01,
+        valmax=1,
+        valinit=lambda_,
+    )
+
+    # Make a vertically oriented slider to control the amplitude
+    axamp = fig.add_axes([0.1, 0.15, 0.65, 0.03])
+    amp_slider = Slider(
+        ax=axamp,
+        label="p",
+        valmin=1,
+        valmax=10,
+        valinit=pp,
+    )
 
 
+    # The function to be called anytime a slider's value changes
+    def update(val):
+        global lambda_
+        global pp
+        global p
+        lambda_ = freq_slider.val
+        pp=int(amp_slider.val)
+        outputs,x=show_gen_control()
+        avg_out=((outputs[0]+outputs[1])/2)[:-1]
+        line.set_ydata(avg_out)
+        line2.set_ydata(x[0])
+        line3.set_ydata(x[1])
+        p.kill() #reset background task
+        p=Process(target=sender, args=[avg_out,B]) #start playing
+        p.start()   #set new background task
+        fig.canvas.draw_idle()
 
 
-# Create the figure and the line that we will manipulate
-fig, ax = plt.subplots()
-#fig.subplots_adjust(left=0.05, bottom=0.15, right=0.95, top=0.98, wspace=0.05, hspace=0.05)
-out,x=show_gen_control()
-avg_out=((out[0]+out[1])/2)[:-1]
-line, = ax.plot(avg_out, lw=2)
-line2, = ax.plot(x[0],c="r",label="neuron 2", lw=2)
-line3, = ax.plot(x[1],c="b",label="neuron 1", lw=2)
-ax.set_xlabel('Iteration +600')
-ax.set_ylabel('Neuron output')
-ax.set_ylim(0,1)
-ax.legend(loc="lower right")
-# adjust the main plot to make room for the sliders
-fig.subplots_adjust(left=0.25, bottom=0.25)
+    # register the update function with each slider
+    freq_slider.on_changed(update)
+    amp_slider.on_changed(update)
 
-# Make a horizontal slider to control the frequency.
-axfreq = fig.add_axes([0.1, 0.1, 0.65, 0.03])
+    # Create a `matplotlib.widgets.Button` to reset the sliders to initial values.
+    resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
+    button = Button(resetax, 'Reset', hovercolor='0.975')
+    resetax1 = fig.add_axes([0.8, 0.001, 0.1, 0.04])
+    button1 = Button(resetax1, 'Reset weights', hovercolor='0.975')
 
-freq_slider = Slider(
-    ax=axfreq,
-    label='lambda',
-    valmin=0.01,
-    valmax=1,
-    valinit=lambda_,
-)
+    def reset(event):
+        freq_slider.reset()
+        amp_slider.reset()
 
-# Make a vertically oriented slider to control the amplitude
-axamp = fig.add_axes([0.1, 0.15, 0.65, 0.03])
-amp_slider = Slider(
-    ax=axamp,
-    label="p",
-    valmin=1,
-    valmax=10,
-    valinit=pp,
-)
+    def reset_weight(event):
+        thetas=np.random.random((2,1)) #bias terms
+        weights=np.random.random((2,2))
+        update(event)
 
-
-# The function to be called anytime a slider's value changes
-def update(val):
-    global lambda_
-    global pp
-    lambda_ = freq_slider.val
-    pp=int(amp_slider.val)
-    outputs,x=show_gen_control()
-    avg_out=((outputs[0]+outputs[1])/2)[:-1]
-    line.set_ydata(avg_out)
-    line2.set_ydata(x[0])
-    line3.set_ydata(x[1])
-    fig.canvas.draw_idle()
-
-
-# register the update function with each slider
-freq_slider.on_changed(update)
-amp_slider.on_changed(update)
-
-# Create a `matplotlib.widgets.Button` to reset the sliders to initial values.
-resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
-button = Button(resetax, 'Reset', hovercolor='0.975')
-resetax1 = fig.add_axes([0.8, 0.001, 0.1, 0.04])
-button1 = Button(resetax1, 'Reset weights', hovercolor='0.975')
-
-def reset(event):
-    freq_slider.reset()
-    amp_slider.reset()
-
-def reset_weight(event):
-    thetas=np.random.random((2,1)) #bias terms
-    weights=np.random.random((2,2))
-    update(event)
-
-button.on_clicked(reset)
-button1.on_clicked(reset_weight)
-plt.show()
+    button.on_clicked(reset)
+    button1.on_clicked(reset_weight)
+    plt.show()
