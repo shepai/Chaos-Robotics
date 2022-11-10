@@ -59,7 +59,7 @@ class Board:
                 pass
         return result
     def move(self,motor,angle):
-        self.COM.exec_raw_no_follow('motorMove('+str(motor)+'+'+str(angle)+')') 
+        self.COM.exec_raw_no_follow('moveMotor('+str(motor)+','+str(angle)+')')#.decode("utf-8").replace("\r\n","")
     def close(self):
         self.COM.close()
 
@@ -134,7 +134,7 @@ def sender(arr,com):
     #arr,B=arr[0],arr[1]
     B=Board()
     B.connect(com)
-    B.runFile(fileToRun="C:/Users/dexte/github/Chaos-Robotics/Hardware/Motor control/main_program.py") #load the file that we want for motor control 
+    B.runFile("C:/Users/dexte/github/Chaos-Robotics/Hardware/Motor control/main_program.py")
     for i in range(len(arr)):
         print("moving 1 to ",180*arr[i])
         B.move(1,180*arr[i])
@@ -149,7 +149,9 @@ if __name__ == '__main__':
             res=B.serial_ports()
             print("ports:",res)
             B.connect(res[0])
+            
             COM=res[0]
+            B.move(1,180)
             B.close()
         except IndexError:
             time.sleep(1)
@@ -164,6 +166,7 @@ if __name__ == '__main__':
     line, = ax.plot(avg_out, lw=2)
     line2, = ax.plot(x[0],c="r",label="neuron 2", lw=2)
     line3, = ax.plot(x[1],c="b",label="neuron 1", lw=2)
+
     p=Process(target=sender, args=[avg_out,COM]) #start playing
     p.start()
     
@@ -209,7 +212,7 @@ if __name__ == '__main__':
         line2.set_ydata(x[0])
         line3.set_ydata(x[1])
         p.kill() #reset background task
-        p=Process(target=sender, args=[avg_out,B]) #start playing
+        p=Process(target=sender, args=[avg_out,COM]) #start playing
         p.start()   #set new background task
         fig.canvas.draw_idle()
 

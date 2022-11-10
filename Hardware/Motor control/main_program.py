@@ -60,3 +60,6 @@ servo=servoBot(1,2)
 
 def moveMotor(motor,angle):
     servo.servoWrite(motor,angle)
+    return "angle"+str(angle)
+
+moveMotor(1,180)
