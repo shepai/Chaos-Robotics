@@ -75,7 +75,61 @@ while COM=="":
     except IndexError:
         time.sleep(1)
 
+
+#set up chaos
+
+def sigmoid(x):
+    with np.errstate(invalid='ignore'):
+        return (1/(1+np.exp(-1*x)))
+
+def step_e(i,t,mus,Cp,x,j,lambda_,p):
+    global p_count
+    #apply mathematic formula
+    with np.errstate(invalid='ignore'):
+        mus[t+1]=(mus[t-1]**p)+lambda_*(((x[0][t-1]-x[0][t-1-p])**2+(x[1][t-1]-x[1][t-1-p])**2)/p) 
+        Cp[:,t]=(mus[t])*np.sum(weights*(x[:,t]-x[:,t-p]),axis=1) 
+    a=np.dot(weights,x[:,t])
+    x[i][t+1]=sigmoid(thetas[i]+a[i]+Cp[i][t])
+    x[j][t+1]=sigmoid(thetas[j]+a[j]+Cp[j][t])
+    return x
+    
+def run(steps,p,lambda_=0.05):
+    global thetas
+    global weights
+    mus=np.zeros((steps,))
+    mus[0]=-1
+    x=np.zeros((2,steps))
+    x[0][0]=random.randint(0,2)
+    x[1][0]=random.randint(0,2)
+    Cp=np.zeros((2,steps))
+    Cp[0][0]=1
+    Cp[1][0]=1
+    thetas=np.random.normal(1,0.5,(2,1)) #bias terms
+    weights=np.random.normal(1,0.5,(2,2))
+    t=1
+    for st in range(steps-2):
+        t=st+1
+        x=step_e(0,t,mus,Cp,x,1,lambda_,p)
+    avg_out=((x[0]+x[1])/2)[:-1]
+    return avg_out,mus
+
+steps=10
+genotype=np.array([random.randint(1,9) for i in range(steps)])
+new_geno=np.zeros((steps**2,))
+#count differences
+diff=(np.diff(genotype)!=0).sum()
+#steps*=100 #increase overall size
+l=0.05
+for i in range(len(genotype)):
+    avg_out,mus=run(steps,genotype[i],lambda_=l)
+    new_geno[0+steps*i:min(steps+steps*i -1,len(new_geno)-1)]=avg_out[0:steps-1]
+plt.plot(new_geno)
+plt.show()
+for sig in new_geno:
+    B.move(1,max(sig*180,180))
+    time.sleep(0.75)
+    print(sig*180)
 print("move")
 time.sleep(1)
-B.move(1,0)
+
 B.close()
