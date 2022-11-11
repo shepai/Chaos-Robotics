@@ -118,18 +118,16 @@ genotype=np.array([random.randint(1,9) for i in range(steps)])
 new_geno=np.zeros((steps**2,))
 #count differences
 diff=(np.diff(genotype)!=0).sum()
-#steps*=100 #increase overall size
 l=0.05
-for i in range(len(genotype)):
+#create dynamic genotype
+for i in range(len(genotype)): 
     avg_out,mus=run(steps,genotype[i],lambda_=l)
-    new_geno[0+steps*i:min(steps+steps*i -1,len(new_geno)-1)]=avg_out[0:steps-1]
+    new_geno[0+steps*i:min(steps+steps*i -1,len(new_geno)-1)]=avg_out[0:steps-1] #append new signal generation
 plt.plot(new_geno)
 plt.show()
-for sig in new_geno:
-    B.move(1,max(sig*180,180))
+for sig in new_geno: #loop through genotype
+    B.move(1,max(sig*180,180)) #send motor commands to board 
     time.sleep(0.75)
     print(sig*180)
-print("move")
-time.sleep(1)
 
 B.close()
