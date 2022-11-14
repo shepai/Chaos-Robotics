@@ -13,7 +13,31 @@ import math as maths
 filepath="C:/Users/dexte/OneDrive/Pictures/Saved Pictures/PhD chaos/AutoGen/"
 
 SIM='MountainCar-v0'
-
+def run_trial(genotype,num_trials,show=True):
+    env = gym.make(SIM,render_mode="rgb_array")
+    observation, info = env.reset()
+    rewards=0
+    assert len(genotype)>=num_trials, "Make sure the num_trials is not greater than your genotype size"
+    observations=[]
+    totalFit=-100
+    best_obvs=[]
+    for _ in range(num_trials):
+        action = int(genotype[_])
+        observation, reward, terminated, truncated, info = env.step(action) #step through with each action
+        rewards+=reward
+        observations.append(fitness(observation))
+        if terminated or truncated: #environment finished
+            observation, info = env.reset()
+            if sum(observations)>=totalFit: #save best observaations
+                totalFit=sum(observation)
+                best_obvs=dc(observations) #copy obs
+            observations=[]
+    endObs=observation
+    if show:
+        return rewards,endObs,env.render()
+    env.close()
+    endObs=observation
+    return rewards,best_obvs
 
 def visualise(chaotic,genotype,num_trials,filepath="",external_count=None):
     env = gym.make(SIM,render_mode="rgb_array")
@@ -135,16 +159,30 @@ def run(steps,p,lambda_=0.05):
     return avg_out,mus
 
 steps=100
-genotype=np.array([random.randint(1,9) for i in range(steps)])
-new_geno=np.zeros((steps**2,))
-#count differences
-diff=(np.diff(genotype)!=0).sum()
-l=0.05
+
+
+
 #steps*=100 #increase overall size
-for i in range(len(genotype)):
-    avg_out,mus=run(steps,genotype[i],lambda_=l)
-    new_geno[steps*i:min(steps+steps*i -1,len(new_geno)-1)]=avg_out[0:steps-1]
-print(genotype)
+
+
+def makePop(size,steps,interval=None):
+    population=[]
+    for _ in range(size):
+        genotype=np.array([random.randint(1,9) for i in range(steps)])
+        new_geno=np.zeros((steps**2,))
+        #count differences
+        diff=(np.diff(genotype)!=0).sum()
+        l=0.05
+        if interval==None:
+            interval = steps
+        for i in range(len(genotype)):
+            avg_out,mus=run(steps,genotype[i],lambda_=l)
+            if interval*i < size:
+                new_geno[interval*i:min(interval+interval*i -1,len(new_geno)-1)]=avg_out[0:interval-1]
+        population.append(new_geno)
+    return population
+    
+
 def convertDecision(signal):
     #make threshold with val and create a signal based off of the chaotic one
     if np.max(signal)>1:
@@ -155,8 +193,55 @@ def convertDecision(signal):
     new[np.argwhere(signal>0.6)]=2 #set by threshold
     return new
 
-decision=convertDecision(new_geno[0:500])
+def mutate(genotype,prob=0.2):
+    geno=dc(genotype) #make copy
+    for i in range(len(geno)):
+        if random.random() < prob:
+            geno[i]=random.randint(1,9)
+
+#run variables
+genoPopSize=25
+generations=500
+population = makePop(genoPopSize,500,interval=100)
+fitnesses=[] 
+trials=100
+best_ins=-1
+#main loop
+for gen in range(generations):
+    print("Percentage done:",gen/generations *100,"%")
+    n1=random.randint(0,len(population)-1)
+    n2=n1
+    while n2==n1: #pick unique other variable
+        n2=random.randint(0,len(population)-1)
+    geno1=dc(population[n1])
+    geno2=dc(population[n2])
+    #trial 1
+    decision=convertDecision(geno1)
+    genotype=decision.reshape((decision.shape[0],1))
+    _,obs=run_trial(genotype,trials,show=False)
+    fitness1=sum(obs)
+    #trial 2
+    decision=convertDecision(geno2)
+    genotype=decision.reshape((decision.shape[0],1))
+    _,obs=run_trial(genotype,trials,show=False)
+    fitness2=sum(obs)
+    #microbial selectio
+    if fitness1>fitness2:
+        best_ins=n1
+        population[n2]=dc(mutate(geno1))
+    elif fitness2>fitness1:
+        best_ins=n1
+        population[n1]=dc(mutate(geno2))
+    fitnesses.append(max(fitnesses+[fitness1,fitness2]))
+
+
+#get best
+new_geno=population[best_ins]
+decision=convertDecision(new_geno)
 genotype=decision.reshape((decision.shape[0],1))
 c=visualise(new_geno,genotype,len(genotype),filepath=filepath)
 plt.imshow(c)
+plt.show()
+
+plt.plot(fitnesses)
 plt.show()
