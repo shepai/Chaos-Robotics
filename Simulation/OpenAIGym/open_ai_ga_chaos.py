@@ -37,7 +37,7 @@ def run_trial(genotype,num_trials,show=True):
         return rewards,endObs,env.render()
     env.close()
     endObs=observation
-    return rewards,best_obvs
+    return rewards,totalFit
 
 def visualise(chaotic,genotype,num_trials,filepath="",external_count=None):
     env = gym.make(SIM,render_mode="rgb_array")
@@ -158,12 +158,6 @@ def run(steps,p,lambda_=0.05):
     avg_out=((x[0]+x[1])/2)[:-1] #get overall averages
     return avg_out,mus
 
-steps=100
-
-
-
-#steps*=100 #increase overall size
-
 
 def makePop(size,steps,interval=None):
     population=[]
@@ -219,13 +213,13 @@ for gen in range(generations):
     decision=convertDecision(geno1)
     genotype=decision.reshape((decision.shape[0],1))
     _,obs=run_trial(genotype,trials,show=False)
-    fitness1=sum(obs)
+    fitness1=obs
     #trial 2
     decision=convertDecision(geno2)
     genotype=decision.reshape((decision.shape[0],1))
     _,obs=run_trial(genotype,trials,show=False)
-    fitness2=sum(obs)
-    #microbial selectio
+    fitness2=obs
+    #microbial selection
     if fitness1>fitness2:
         best_ins=n1
         population[n2]=dc(mutate(geno1))
@@ -234,12 +228,12 @@ for gen in range(generations):
         population[n1]=dc(mutate(geno2))
     fitnesses.append(max(fitnesses+[fitness1,fitness2]))
 
-
+print("Completed")
 #get best
 new_geno=population[best_ins]
 decision=convertDecision(new_geno)
 genotype=decision.reshape((decision.shape[0],1))
-c=visualise(new_geno,genotype,len(genotype),filepath=filepath)
+c=visualise(new_geno,genotype,trials,filepath=filepath)
 plt.imshow(c)
 plt.show()
 
