@@ -138,6 +138,11 @@ def sender(arr,com):
     for i in range(len(arr)):
         print("moving 1 to ",180*arr[i])
         B.move(1,180*arr[i])
+        B.move(2,180*arr[i])
+        B.move(3,180*arr[i])
+        B.move(4,180*arr[i])
+        B.move(5,180*arr[i])
+        B.move(6,180*arr[i])
         time.sleep(0.5)
 
 if __name__ == '__main__':

@@ -37,7 +37,6 @@ for k in range(100):
         try:
             bot.motorOn(3, "f" if b.out[0]<0 else "r", 100*abs(b.out[0]))
             bot.motorOn(4, "f" if b.out[1]<0 else "r", 100*abs(b.out[1]))
-            #pass
         except:
             bot.stop()
     bot.stop()

@@ -19,6 +19,8 @@ class Brain:
         self.in_nuerons_biases=np.array([[0.233793,-0.529649],[0.323159,0.218076]]) #cp.normal(-2,2,size=(sensor_num,2))/10
         self.out_nuerons_weights=np.array([[5.06038, -3.29649],[-5.00933, 5.00933]])#cp.normal(0,2,size=(sensor_num,2))    
         self.out_nuerons_biases=np.array([[0.122669,0.196101],[0.129649, 0.282701]])#cp.normal(-2,2,size=(sensor_num,2))/10
+        self.thetas= np.array([[3.4],[3.8]])#np.random.normal(2,1.5,(2,1)) #bias terms
+        self.weights= np.array([[-12,5.6],[0,-6.6]]) #np.random.normal(2,1.5,(2,2))
     def reset(self):
         self.mus=np.zeros((self.steps,))
         self.mus[0]=-1
@@ -28,8 +30,6 @@ class Brain:
         self.x=np.zeros((2,self.steps))
         self.x[0][0]=1#random.randint(0,2)
         self.x[1][0]=1#random.randint(0,2)
-        self.thetas= np.array([[3.4],[3.8]])#np.random.normal(2,1.5,(2,1)) #bias terms
-        self.weights= np.array([[-12,5.6],[0,-6.6]]) #np.random.normal(2,1.5,(2,2))
         self.t=0
     def clearOld(self):
         #reset arrays but keep last item
