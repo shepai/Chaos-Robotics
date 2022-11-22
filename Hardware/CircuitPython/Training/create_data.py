@@ -15,7 +15,7 @@ import random
 
 data_set_size=200 #define size of data
 
-X=np.random.random_sample((data_set_size,2,1))
+X=np.random.random_sample((data_set_size,2))
 y=np.zeros((data_set_size,3))
 
 unseen_X=np.random.random_sample((data_set_size,2,1))
@@ -43,4 +43,9 @@ np.save("x_data",X)
 np.save("y_data",y)
 np.save("x_data_test",unseen_X)
 np.save("y_data_test",unseen_y)
+
+import pandas as pd 
+pd.DataFrame(X).to_csv("x_data.csv", header=None, index=None)
+pd.DataFrame(y).to_csv("y_data.csv", header=None, index=None)
+
 
