@@ -18,11 +18,7 @@ X_data=torch.tensor(X_data,dtype=torch.float32)
 y_data=torch.tensor(y,dtype=torch.float32)
 
 output_nodes=3
-network=Network(output_nodes)
-network.add_layer(2,act=torch.sigmoid)
-network.add_layer(6,act=torch.sigmoid)
-network.add_layer(6,act=torch.sigmoid)
-network.show()
+
 
 def run_trial(network):
     acc=0
@@ -35,14 +31,51 @@ def run_trial(network):
             acc+=1
     return acc/len(X_data)
 def mutate(weights):
-    noise=np.random.normal(0,0.5,weights.shape)
+    noise=np.random.normal(0,5,weights.shape)
     return weights+noise
 
-weights=network.get_weights()
-print(run_trial(network))
-w=mutate(weights[0])
-print(weights[0].shape,w.shape,weights[1])
-network.reform_weights(w,weights[1])
-print(run_trial(network))
 
-print(weights)
+
+pop_size=100
+population=[]
+#generate population
+for gen in range(pop_size):
+    network=Network(output_nodes)
+    network.add_layer(2,act=torch.sigmoid)
+    network.add_layer(6,act=torch.sigmoid)
+    network.add_layer(6,act=torch.sigmoid)
+    population.append(network)
+
+#genetic algorithm
+gen=1000
+fitness=0
+bestInd=-1
+for g in range(gen):
+    #get genotypes
+    n1=random.randint(0,pop_size-1)
+    n2 = n1-1 if n1+1>=pop_size else n1+1
+    net1=population[n1]
+    net2=population[n2]
+    #trial 1
+    fit1=run_trial(net1)
+    #trial 2
+    fit2=run_trial(net2)
+    if fit1>fit2: #wselection
+        weights=net1.get_weights()
+        w=mutate(weights[0])
+        net2.reform_weights(w,weights[1])
+    elif fit1<fit2: #selection
+        weights=net1.get_weights()
+        w=mutate(weights[0])
+        net2.reform_weights(w,weights[1])
+    if fit1>fitness:
+        fitness=fit1
+        bestInd=n1
+    elif fit2>fitness:
+        fitness=fit2
+        bestInd=n2
+
+    print("Gen",g,"Fitness",fitness)
+
+
+network.save("parameters",path="C:/Users/dexte/github/Chaos-Robotics/models/")

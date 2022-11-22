@@ -57,7 +57,7 @@ class Layer:
         return self.a * (1 - self.a)   
     def setWeight(self,val):
         val=val.reshape(self.getShape())
-        self.matrix=torch.tensor(val)
+        self.matrix=nn.Parameter(torch.tensor(val,dtype=torch.float32))
         
 """
 The network that combines all the layers together
