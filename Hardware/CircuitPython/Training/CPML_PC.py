@@ -41,7 +41,9 @@ class Layer:
     def getShape(self): #return the shape of the matrix
         return self.matrix.shape
     def setBias(self,bias):
-        self.bias=bias
+        if bias!=None:
+            self.bias=torch.tensor(bias)
+        else: self.bias==None
     def length(self):
         s=0
         if self.bias!=None: s+=len(self.bias.flatten())
@@ -53,6 +55,9 @@ class Layer:
         return self.a
     def activation_grad(self):
         return self.a * (1 - self.a)   
+    def setWeight(self,val):
+        val=val.reshape(self.getShape())
+        self.matrix=torch.tensor(val)
         
 """
 The network that combines all the layers together
@@ -119,12 +124,20 @@ class Network:
             s+=len(layer.matrix.flatten())
         #indicies.append(s)
         return wb, indicies
-    def reform_weights(self,wb,indicies):
-        for i in range(0,indicies,3):
-            #stretch out the array
-            wb[ind[i]:ind[i+1]]=layer.matrix.flatten()
-            if ind[i+1]!=-1:
-                wb[ind[i+1]:ind[i+2]]=layer.bias.flatten()
+    def reform_weights(self,wb,ind):
+        self.network[0].setWeight(wb[ind[0]:ind[1]])
+        i=2
+        for j,layer in enumerate(self.network): #perform calculations
+            if i%2==0: #bias term
+                if ind[i]!=-1:
+                    layer.bias=wb[ind[i-1]:ind[i]]
+            elif i%2!=0: #weight term
+                if ind[i-1]!=-1:
+                    layer.setWeight(wb[ind[i-1]:ind[i]])
+                else:
+                    layer.setWeight(wb[ind[i-2]:ind[i]])
+            i+=1
+        
     def parameters(self):
         n=[]
         for i,layer in enumerate(self.network): #perform calculations
