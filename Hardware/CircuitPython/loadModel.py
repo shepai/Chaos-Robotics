@@ -10,6 +10,8 @@ from time import *
 import busio
 import sdcardio
 import storage
+import digitalio
+from analogio import AnalogIn
 
 #create neural network
 net=Network(3)
@@ -70,4 +72,18 @@ net.reform_weights(weights,ind)
 print("Accuracy:",getAccuracy(net) ,"%")
 print("Accuracy:",getAccuracy(net) ,"%")
 
+#test real sensors
+sensorA=AnalogIn(board.GP26)
+sensorB=AnalogIn(board.GP27)
+
+def getSensor(): #get an input array of sensor readngs
+    a=sensorA.value / 65535 * sensorA.reference_voltage /4.8
+    b=sensorB.value / 65535 * sensorB.reference_voltage /4.8
+    return 1-np.array([a,b])
+
+actions=["forward","left","right"]
+for i in range(100):
+    inputs=getSensor() #get sensor readings
+    out=net.forward(inputs) #neural desicion
+    print(actions[np.argmax(out)]) #print action
 
