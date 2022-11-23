@@ -39,13 +39,14 @@ def in_range(num1,num2,r=0.1):
 y=convert(X,y)
 unseen_y=convert(unseen_X,unseen_y)
 
-np.save("x_data",X)
-np.save("y_data",y)
-np.save("x_data_test",unseen_X)
-np.save("y_data_test",unseen_y)
+path="C:/Users/dexte/github/Chaos-Robotics/models"
+np.save(path+"x_data",X)
+np.save(path+"y_data",y)
+np.save(path+"x_data_test",unseen_X)
+np.save(path+"y_data_test",unseen_y)
 
 import pandas as pd 
-pd.DataFrame(X).to_csv("x_data.csv", header=None, index=None)
-pd.DataFrame(y).to_csv("y_data.csv", header=None, index=None)
+pd.DataFrame(X).to_csv(path+"x_data.csv", header=None, index=None)
+pd.DataFrame(y).to_csv(path+"y_data.csv", header=None, index=None)
 
 
