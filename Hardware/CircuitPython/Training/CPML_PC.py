@@ -125,18 +125,19 @@ class Network:
         #indicies.append(s)
         return wb, indicies
     def reform_weights(self,wb,ind):
-        self.network[0].setWeight(wb[ind[0]:ind[1]])
-        i=2
-        for j,layer in enumerate(self.network): #perform calculations
-            if i%2==0: #bias term
+        back=ind[0]
+        biases=[2+(2*i) for i in range(((len(ind)-1)//2))]
+        layer=0
+        for i in range(1,len(ind)):
+            front=ind[i]
+            if i in biases: #bias term
                 if ind[i]!=-1:
-                    layer.bias=wb[ind[i-1]:ind[i]]
-            elif i%2!=0: #weight term
-                if ind[i-1]!=-1:
-                    layer.setWeight(wb[ind[i-1]:ind[i]])
-                else:
-                    layer.setWeight(wb[ind[i-2]:ind[i]])
-            i+=1
+                    self.network[layer].bias=wb[back:front]
+                    back=ind[i]
+                layer+=1
+            else: #weight term
+                self.network[layer].setWeight(wb[back:front])
+                back=ind[i]
         
     def parameters(self):
         n=[]
@@ -151,3 +152,19 @@ class Network:
         pd.DataFrame(wb).to_csv(path+name+".csv", header=None, index=None)
         pd.DataFrame(np.array(ind)).to_csv(path+"meta_"+name+".csv", header=None, index=None)
 
+"""net=Network(3)
+net.add_layer(2,act=torch.sigmoid)
+net.add_layer(6,act=torch.sigmoid)
+net.add_layer(6,act=torch.sigmoid)
+
+weights=[]
+with open("C:/Users/dexte/github/Chaos-Robotics/models/parameters.csv", "r") as file:
+    weights = [float(numeric_string) for numeric_string in file.read().split("\n")[:-1]]
+ind=[]
+with open("C:/Users/dexte/github/Chaos-Robotics/models/meta_parameters.csv", "r") as file:
+    ind = [int(numeric_string) for numeric_string in file.read().split("\n")[:-1]]
+weights=np.array(weights)
+
+net.reform_weights(weights,ind)"""
+
+#print(">>",net.forward(torch.tensor(np.array([0.1,0.1]))))

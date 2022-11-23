@@ -8,11 +8,12 @@ import torch.nn as nn
 from CPML_PC import *
 import numpy as np
 import random
+from copy import deepcopy
 
-X_data=np.load("C:/Users/dexte/github/Chaos-Robotics/x_data.npy")
-y=np.load("C:/Users/dexte/github/Chaos-Robotics/y_data.npy")
-unseen_X=np.load("C:/Users/dexte/github/Chaos-Robotics/x_data_test.npy")
-unseen_y=np.load("C:/Users/dexte/github/Chaos-Robotics/y_data_test.npy")
+X_data=np.load("C:/Users/dexte/github/Chaos-Robotics/models/Data/modelsx_data.npy")
+y=np.load("C:/Users/dexte/github/Chaos-Robotics/models/Data/modelsy_data.npy")
+unseen_X=np.load("C:/Users/dexte/github/Chaos-Robotics/models/Data/modelsx_data_test.npy")
+unseen_y=np.load("C:/Users/dexte/github/Chaos-Robotics/models/Data/modelsy_data_test.npy")
 
 X_data=torch.tensor(X_data,dtype=torch.float32)
 y_data=torch.tensor(y,dtype=torch.float32)
@@ -61,11 +62,11 @@ for g in range(gen):
     #trial 2
     fit2=run_trial(net2)
     if fit1>fit2: #wselection
-        weights=net1.get_weights()
+        weights=deepcopy(net1.get_weights())
         w=mutate(weights[0])
         net2.reform_weights(w,weights[1])
     elif fit1<fit2: #selection
-        weights=net1.get_weights()
+        weights=deepcopy(net1.get_weights())
         w=mutate(weights[0])
         net2.reform_weights(w,weights[1])
     if fit1>fitness:
@@ -75,7 +76,13 @@ for g in range(gen):
         fitness=fit2
         bestInd=n2
 
-    print("Gen",g,"Fitness",fitness)
+    print("Gen",g,"Fitness",fitness,bestInd)
 
-
-network.save("parameters",path="C:/Users/dexte/github/Chaos-Robotics/models/")
+fit=0
+for i in population:
+    network = i
+    temp=run_trial(network)
+    if temp>fit:
+        fit=temp
+        network.save("parameters",path="C:/Users/dexte/github/Chaos-Robotics/models/")
+print(fit)
