@@ -8,6 +8,7 @@ import ulab.numpy as np
 from board import *
 from time import *
 import busio
+import board
 import sdcardio
 import storage
 import digitalio
@@ -16,7 +17,6 @@ from analogio import AnalogIn
 #create neural network
 net=Network(3)
 net.add_layer(2)
-net.add_layer(6)
 net.add_layer(6)
 net.show()
 
@@ -35,7 +35,7 @@ x_data=np.zeros((200,2))
 with open("/sd/modelsx_data.csv", "r") as file:
     for i,numeric_string in enumerate(file.read().split("\n")[:-1]):
         for j,o in enumerate(numeric_string.split(",")):
-            val=o.replace("\r","")[0:7]
+            val=o.replace("\r","")[0:8]
             x_data[i][j]=float(val)
 
 y_data=[]
@@ -84,6 +84,8 @@ def getSensor(): #get an input array of sensor readngs
 actions=["forward","left","right"]
 for i in range(100):
     inputs=getSensor() #get sensor readings
+    print(inputs)
     out=net.forward(inputs) #neural desicion
     print(actions[np.argmax(out)]) #print action
+    sleep(0.5)
 

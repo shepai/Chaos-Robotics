@@ -31,7 +31,7 @@ def convert(X,y):
         elif arr[1]>arr[0]:
             y[i][2]=1
     return y
-def in_range(num1,num2,r=0.1):
+def in_range(num1,num2,r=0.15):
     if num1-r<=num2 and num1+r>=num2:
         return True
     return False
@@ -39,7 +39,7 @@ def in_range(num1,num2,r=0.1):
 y=convert(X,y)
 unseen_y=convert(unseen_X,unseen_y)
 
-path="C:/Users/dexte/github/Chaos-Robotics/models"
+path="C:/Users/dexte/github/Chaos-Robotics/models/Data/models"
 np.save(path+"x_data",X)
 np.save(path+"y_data",y)
 np.save(path+"x_data_test",unseen_X)

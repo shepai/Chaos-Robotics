@@ -32,20 +32,19 @@ def run_trial(network):
             acc+=1
     return acc/len(X_data)
 def mutate(weights):
-    noise=np.random.normal(0,5,weights.shape)
+    noise=np.random.normal(0,2,weights.shape)
     return weights+noise
 
 
 
-pop_size=100
+pop_size=20
 population=[]
 #generate population
 for gen in range(pop_size):
     network=Network(output_nodes)
     network.add_layer(2,act=torch.sigmoid)
     network.add_layer(6,act=torch.sigmoid)
-    network.add_layer(6,act=torch.sigmoid)
-    population.append(network)
+    population.append(deepcopy(network))
 
 #genetic algorithm
 gen=1000
@@ -68,14 +67,15 @@ for g in range(gen):
     elif fit1<fit2: #selection
         weights=deepcopy(net1.get_weights())
         w=mutate(weights[0])
-        net2.reform_weights(w,weights[1])
+        net1.reform_weights(w,weights[1])
     if fit1>fitness:
         fitness=fit1
         bestInd=n1
     elif fit2>fitness:
         fitness=fit2
         bestInd=n2
-
+    population[n1]=net1
+    population[n2]=net2
     print("Gen",g,"Fitness",fitness,bestInd)
 
 fit=0
