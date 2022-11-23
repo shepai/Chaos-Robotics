@@ -58,9 +58,15 @@ def getAccuracy(net):
             accuracy+=1
     return accuracy/len(x_data) *100
 
+def show_weights(net):
+    for i in range(len(net.network)):
+        print(np.sum(net.network[i].matrix))
+    
 #network built on previous trained weights
+print(np.sum(net.network[-1].matrix))
 print("Accuracy:",getAccuracy(net),"%")
 net.reform_weights(weights,ind)
+
 print("Accuracy:",getAccuracy(net) ,"%")
 print("Accuracy:",getAccuracy(net) ,"%")
 
