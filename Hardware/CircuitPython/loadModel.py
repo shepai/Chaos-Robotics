@@ -29,30 +29,39 @@ vfs = storage.VfsFat(sd)
 storage.mount(vfs, '/sd')
 
 #load training set
-x_data=[]
-with open("/sd/x_data.csv", "r") as file:
-    x_data = [[float(o) for o in numeric_string.split(",")] for numeric_string in file.read().split("\n")]
+x_data=np.zeros((200,2))
+with open("/sd/modelsx_data.csv", "r") as file:
+    for i,numeric_string in enumerate(file.read().split("\n")[:-1]):
+        for j,o in enumerate(numeric_string.split(",")):
+            val=o.replace("\r","")[0:7]
+            x_data[i][j]=float(val)
 
 y_data=[]
-with open("/sd/y_data.csv", "r") as file:
-    y_data = [[float(o) for o in numeric_string.split(",")] for numeric_string in file.read().split("\n")]
+with open("/sd/modelsy_data.csv", "r") as file:
+    y_data = [[float(o) for o in numeric_string.split(",")] for numeric_string in file.read().split("\n")[:-1]]
 
 #load network data
 weights=[]
 with open("/sd/parameters.csv", "r") as file:
-    weights = [float(numeric_string) for numeric_string in file.read().split("\n")]
+    weights = [float(numeric_string) for numeric_string in file.read().split("\n")[:-1]]
 ind=[]
 with open("/sd/meta_parameters.csv", "r") as file:
-    ind = [float(numeric_string) for numeric_string in file.read().split("\n")]
+    ind = [int(numeric_string) for numeric_string in file.read().split("\n")[:-1]]
+weights=np.array(weights)
+#testing loop
+def getAccuracy(net):
+    accuracy=0
+    for dat,lab in zip(x_data,y_data):
+        y_pred=net.forward(dat)
+        #get best
+        if np.argmax(y_pred)==np.argmax(lab):
+            accuracy+=1
+    return accuracy/len(x_data) *100
 
 #network built on previous trained weights
+print("Accuracy:",getAccuracy(net),"%")
 net.reform_weights(weights,ind)
+print("Accuracy:",getAccuracy(net) ,"%")
+print("Accuracy:",getAccuracy(net) ,"%")
 
-#testing loop
-accuracy=0
-for dat,lab in zip(x_data,y_data):
-    y_pred=net.forward(dat)
-    #get best
-    if np.argmax(y_pred)==np.argmax(lab):
-        accuracy+=1
-print("Accuracy:",accuracy/len(x_data) *100,"%")
+
