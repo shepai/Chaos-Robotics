@@ -87,8 +87,8 @@ x[1][0]=random.randint(0,2)
 Cp=np.zeros((2,steps))
 Cp[0][0]=1
 Cp[1][0]=1
-thetas=np.random.random((2,1)) #bias terms
-weights=np.random.random((2,2))
+thetas=np.array([[3.4],[3.8]])#np.random.normal(2,1.5,(2,1)) #bias terms
+weights=np.array([[-12,5.6],[0,-6.6]]) #np.random.normal(2,1.5,(2,2))
 lower=1
 outputs=np.zeros((2,steps))
 
@@ -135,14 +135,14 @@ def sender(arr,com):
     B=Board()
     B.connect(com)
     B.runFile("C:/Users/dexte/github/Chaos-Robotics/Hardware/Motor control/main_program.py")
-    for i in range(len(arr)):
-        print("moving 1 to ",180*arr[i])
-        B.move(1,180*arr[i])
-        B.move(2,180*arr[i])
-        B.move(3,180*arr[i])
-        B.move(4,180*arr[i])
-        B.move(5,180*arr[i])
-        B.move(6,180*arr[i])
+    for i in range(len(arr[0])):
+        print("moving 1 to ",180*arr[0][i])
+        B.move(1,180*arr[0][i])
+        B.move(2,180*arr[0][i])
+        B.move(3,180*arr[1][i])
+        #B.move(4,180*arr[1][i])
+        #B.move(5,180*arr[1][i])
+        #B.move(6,180*arr[1][i])
         time.sleep(0.5)
 
 if __name__ == '__main__':
@@ -172,7 +172,7 @@ if __name__ == '__main__':
     line2, = ax.plot(x[0],c="r",label="neuron 2", lw=2)
     line3, = ax.plot(x[1],c="b",label="neuron 1", lw=2)
 
-    p=Process(target=sender, args=[avg_out,COM]) #start playing
+    p=Process(target=sender, args=[out,COM]) #start playing
     p.start()
     
     ax.set_xlabel('Iteration +600')
@@ -217,7 +217,7 @@ if __name__ == '__main__':
         line2.set_ydata(x[0])
         line3.set_ydata(x[1])
         p.kill() #reset background task
-        p=Process(target=sender, args=[avg_out,COM]) #start playing
+        p=Process(target=sender, args=[outputs,COM]) #start playing
         p.start()   #set new background task
         fig.canvas.draw_idle()
 
