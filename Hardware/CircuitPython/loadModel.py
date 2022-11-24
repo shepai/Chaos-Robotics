@@ -13,6 +13,7 @@ import sdcardio
 import storage
 import digitalio
 from analogio import AnalogIn
+from Brain import Brain
 
 #create neural network
 net=Network(3)
@@ -81,11 +82,16 @@ def getSensor(): #get an input array of sensor readngs
     b=sensorB.value / 65535 * sensorB.reference_voltage /4.8
     return 1-np.array([a,b])
 
+
+b=Brain(2,2,size=200)
+b.runP(4) #get started
+p=[1,4,5]
 actions=["forward","left","right"]
+"""
 for i in range(100):
     inputs=getSensor() #get sensor readings
-    print(inputs)
     out=net.forward(inputs) #neural desicion
-    print(actions[np.argmax(out)]) #print action
+    b.runP(p[np.argmax(out)])
+    print(inputs,"-->",b.out) #actions[np.argmax(out)]
     sleep(0.5)
-
+"""
