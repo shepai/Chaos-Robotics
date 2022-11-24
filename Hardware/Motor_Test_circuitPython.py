@@ -42,7 +42,6 @@ def Motor_stop():
     m3.value=0
     m4.value=0
 
-"""
 while True:
     Enable_motor()
     Motor1_forward()
@@ -53,4 +52,3 @@ while True:
     Motor1_reverse()
     Motor2_reverse()
     time.sleep(2) # Both motor in Reverse direction for 2 seconds.
-"""
