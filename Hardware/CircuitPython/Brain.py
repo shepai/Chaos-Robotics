@@ -69,6 +69,12 @@ class Brain:
         self.out=self.B(out) #+ self.post_process_bias #get summed outputs of step
         #place through neural post processing
         #send to motors
-
+    def runP(self,p):
+        self.p=p
+        self.t+=1
+        self.step(self.t)
+        out=self.x[:,self.t+1] 
+        #print(">>>",self.x[:,self.t+1])
+        self.out=self.B(out) #+ self.post_process_bias #get summed outputs of step
 
 
