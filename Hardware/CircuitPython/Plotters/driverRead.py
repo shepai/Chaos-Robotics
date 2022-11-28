@@ -9,7 +9,7 @@ sensorB=[]
 motorA=[]
 motorB=[]
 #gather data in the file
-file=open(path+"LogBB.csv","r")
+file=open(path+"LogBB2291.csv","r")
 r=file.read()
 file.close()
 
