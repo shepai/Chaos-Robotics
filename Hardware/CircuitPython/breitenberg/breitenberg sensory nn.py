@@ -11,6 +11,7 @@ import digitalio
 from analogio import AnalogIn
 from Brain import Brain
 import adafruit_hcsr04
+import random
 
 #create neural network
 net=Network(3)
@@ -63,22 +64,30 @@ def getSensor(): #get an input array of sensor readngs
 #create motors
 Enable_motor() #from motor hat control
 
-b=Brain(2,2,size=50)
+b=Brain(2,2,size=30)
 b.runP(4) #get started
 p=[1,4,6]
 dirA=0
 dirB=0
-file = open("/sd/LogBB.csv", "w")
+#+str(random.randint(0,10000))
+file = open("/sd/LogBB"+str(random.randint(0,10000))+".csv", "w")
+currentP=4
+start_time=time()
 for i in range(100):
     inputs=getSensor() #get sensor readings
     out=net.forward(inputs) #neural desicion
+    if currentP!=p[np.argmax(out)]:
+        b.reset()
+        """for i in range(20): #generate some variability
+            b.runP(currentP)"""
+    currentP=p[np.argmax(out)]
     b.runP(p[np.argmax(out)])
     #move based on outut
-    if b.out[0]-0.15<=b.out[1] and b.out[0]+0.15>=b.out[1]: #within range
+    if b.out[0]-0.1<=b.out[1] and b.out[0]+0.1>=b.out[1]: #within range
         dirA=1
         dirB=1
-        Motor1_reverse()
-        Motor2_reverse()
+        Motor1_forward()
+        Motor2_forward()
     elif b.out[0]>b.out[1]:
         dirA=1
         dirB=-1
@@ -93,11 +102,12 @@ for i in range(100):
         dirA=0
         dirB=0
         Motor_stop()
-    if i%50==0: #prevent overflow
-        b.reset()
+    
     sleep(0.5)
     Motor_stop()
-    file.write(str(inputs[0])+","+str(inputs[1])+","+str(dirA)+","+str(dirB)+","+str(b.out[0])+","+str(b.out[1])+","+str(b.p)+"\n")
+    file.write(str(inputs[0])+","+str(inputs[1])+","+
+               str(dirA)+","+str(dirB)+","+str(b.out[0])+","+
+               str(b.out[1])+","+str(b.p)+","+str(time()-start_time)+"\n")
         
 file.close()
     

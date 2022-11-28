@@ -9,13 +9,13 @@ sensorB=[]
 motorA=[]
 motorB=[]
 #gather data in the file
-file=open(path+"LogBB2291.csv","r")
+file=open(path+"LogBB.csv","r")
 r=file.read()
 file.close()
 
 for line in r.split("\n")[:-1]:
     data=line.split(",")
-    p_vals.append(int(data[-1]))
+    p_vals.append(int(data[-2]))
     motorA.append(int(data[2]))
     motorB.append(int(data[3]))
     chaos.append([float(data[4]),float(data[5])])
