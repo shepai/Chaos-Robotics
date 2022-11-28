@@ -1,3 +1,5 @@
+#https://learn.adafruit.com/todbot-circuitpython-tricks/networking
+
 import time
 import wifi
 import ipaddress
