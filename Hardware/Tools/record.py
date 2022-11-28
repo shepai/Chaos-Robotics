@@ -20,24 +20,28 @@ motorA=[]
 motorB=[]
 timer=[]
 #gather data in the file
-file=open(path+"LogBB2291.csv","r")
+file=open(path+"LogBB.csv","r")
 r=file.read()
 file.close()
-
-for line in r.split("\n")[:-1]:
+d={}
+for i,line in enumerate(r.split("\n")[:-1]):
     data=line.split(",")
-    p_vals.append(int(data[-1]))
+    p_vals.append(int(data[-2]))
     motorA.append(int(data[2]))
     motorB.append(int(data[3]))
     chaos.append([float(data[4]),float(data[5])])
     sensorA.append(float(data[0]))
     sensorB.append(float(data[1]))
-    #timer.append(int(data[-2]))
+    timer.append(int(data[-1]))
+    data=d.get(data[-1],[])
+    data.append(i)
 chaos=np.array(chaos)
 sensorA=np.array(sensorA)
 sensorB=np.array(sensorB)
 sensorA=np.round_(sensorA, decimals = 3)
 sensorB=np.round_(sensorB, decimals = 3)
+motorA=np.array(motorA)
+motorB=np.array(motorB)
 time=[i for i in range(len(sensorA))]
 
 def getData(i,ad):
@@ -70,7 +74,7 @@ def getData(i,ad):
     axes[1,1].plot(time[:i+1],motorB[:i+1])
     axes[1,1].set_xlabel("Time (t)")
     axes[1,1].set_ylabel("Speed")
-    axes[1,1].set_ylim([-1,1],auto=True)
+    #axes[1,1].set_ylim([-1,1],auto=True)
 
     #axes[4].figure(figsize=(5,5))
     axes[2,1].set_title("E: Real world", loc="left")
@@ -93,14 +97,15 @@ p=getData(1,ad)
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'attempt.avi',cv.VideoWriter_fourcc(*'DIVX'), 15, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'ftl_trial2.avi',cv.VideoWriter_fourcc(*'DIVX'), 15, (w,h))
 #gen vid
 for i,j in enumerate(items[:-1]):
-    timestep=j.replace(".png","")
+    timestep=round(float(j.replace(".png","")))
+    bestind=d.get(timestep,i)
     print(j,"out of",items[-1])
     ad=cv.imread(folder+str(j))
     #plot data
-    ad=getData(i,ad)
+    ad=getData(bestind,ad)
     out.write(ad)
     plt.close()
 
