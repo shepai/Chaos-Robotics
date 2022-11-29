@@ -110,5 +110,3 @@ for i in range(100):
                str(b.out[1])+","+str(b.p)+","+str(time()-start_time)+"\n")
         
 file.close()
-    
-    
