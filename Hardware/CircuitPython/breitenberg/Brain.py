@@ -31,6 +31,12 @@ class Brain:
         self.x[0][0]=1#random.randint(0,2)
         self.x[1][0]=1#random.randint(0,2)
         self.t=0
+    def formWeights(self,nparray):
+        nparray=nparray.flatten()
+        weights=nparray[0:4]
+        thetas=nparray[4:]
+        self.thetas=thetas.reshape((2,1))
+        self.weights=weights.reshape((2,2))
     def clearOld(self):
         #reset arrays but keep last item
         self.mus=np.zeros((self.steps,))+self.mus[-1]
@@ -76,5 +82,6 @@ class Brain:
         out=self.x[:,self.t+1] 
         #print(">>>",self.x[:,self.t+1])
         self.out=self.B(out) #+ self.post_process_bias #get summed outputs of step
+
 
 

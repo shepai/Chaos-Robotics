@@ -70,7 +70,7 @@ p=[1,4,6]
 dirA=0
 dirB=0
 #+str(random.randint(0,10000))
-file = open("/sd/LogBB"+str(random.randint(0,10000))+".csv", "w")
+file = open("/sd/LogBB"+".csv", "w")
 currentP=4
 start_time=time()
 for i in range(100):
