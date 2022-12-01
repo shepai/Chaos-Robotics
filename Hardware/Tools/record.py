@@ -97,7 +97,7 @@ p=getData(1,ad)
 h, w = p.shape[:2]
 print(w,h)
 
-out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'ftl_trial.avi',cv.VideoWriter_fourcc(*'DIVX'), 15, (w,h))
+out = cv.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'ftl_trial4_noise.avi',cv.VideoWriter_fourcc(*'DIVX'), 15, (w,h))
 #gen vid
 for i,j in enumerate(items[:-1]):
     timestep=round(float(j.replace(".png","")))

@@ -9,11 +9,13 @@ time_delay=0.5
 iterations=100
 
 print("Recording")
+
 input("Press Enter to begin")
 startTime=time.time()
 for i in range(iterations):
     ret, frame = vid.read()
     time.sleep(time_delay)
     cv2.imwrite(path+str(round(time.time()-startTime,1))+".png", frame)
+
 
 
