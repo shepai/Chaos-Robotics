@@ -11,8 +11,6 @@ University of Sussex PhD student
 import numpy as np
 import random
 import math as maths
-import torch
-import torch.nn as nn
 import pandas as pd 
 
 
@@ -51,7 +49,7 @@ class Layer:
     def activation_(self,inputs):
         #activation functions
         self.z=inputs
-        self.a = 1/(1 + torch.exp(-self.z))
+        self.a = 1/(1 + np.exp(-self.z))
         return self.a
     def activation_grad(self):
         return self.a * (1 - self.a)   
@@ -151,3 +149,59 @@ class Network:
         wb,ind=self.get_weights() #gather
         pd.DataFrame(wb).to_csv(path+name+".csv", header=None, index=None)
         pd.DataFrame(np.array(ind)).to_csv(path+"meta_"+name+".csv", header=None, index=None)
+
+
+class Brain:
+    def __init__(self,lamda_=0.05,size=1000):
+        #set up the inputs, cpg and output
+        self.steps=size
+        self.reset()
+        self.lambda_=lamda_
+        self.values=[1,4,6,8,9]
+        self.p=1 #initial value
+        self.thetas= np.array([[3.4],[3.8]])#np.random.normal(2,1.5,(2,1)) #bias terms
+        self.weights= np.array([[-12,5.6],[0,-6.6]]) #np.random.normal(2,1.5,(2,2))
+    def reset(self):
+        self.mus=np.zeros((self.steps,))
+        self.mus[0]=-1
+        self.Cp=np.zeros((2,self.steps))
+        self.Cp[0][0]=1
+        self.Cp[1][0]=1
+        self.x=np.zeros((2,self.steps))
+        self.x[0][0]=1#random.randint(0,2)
+        self.x[1][0]=1#random.randint(0,2)
+        self.t=0
+    def formWeights(self,nparray):
+        nparray=nparray.flatten() #size 6
+        weights=nparray[0:4]
+        thetas=nparray[4:]
+        self.thetas=thetas.reshape((2,1))
+        self.weights=weights.reshape((2,2))
+    def getWeights(self):
+        #print(self.weights.flatten(),self.thetas.flatten())
+        return np.concatenate((self.weights.flatten(),self.thetas.flatten()))
+    def clearOld(self):
+        #reset arrays but keep last item
+        self.mus=np.zeros((self.steps,))+self.mus[-1]
+        self.Cp=np.zeros((2,self.steps))+self.Cp[-1]
+        self.x=np.zeros((2,self.steps))+self.x[-1]
+        self.t=0
+    def sigmoid(self,x):
+        return (1/(1+np.exp(-1*x)))
+    def step(self,t):
+        #apply mathematic formula to make a step
+        self.mus[t+1]=(self.mus[t-1]**self.p)+self.lambda_*(((self.x[0][t-1]-self.x[0][t-1-self.p])**2+(self.x[1][t-1]-self.x[1][t-1-self.p])**2)/self.p) 
+        self.Cp[:,t]=(self.mus[t])*np.sum(self.weights*(self.x[:,t]-self.x[:,t-self.p]),axis=1) 
+        a=np.dot(self.weights,self.x[:,0])
+        self.x[0][t+1]=self.sigmoid(self.thetas[0]+a[0]+self.Cp[0][t])
+        self.x[1][t+1]=self.sigmoid(self.thetas[1]+a[1]+self.Cp[1][t])
+    def runP(self,p):
+        self.p=p
+        self.t+=1
+        self.step(self.t)
+        out=self.x[:,self.t+1] 
+        #print(">>>",self.x[:,self.t+1])
+        self.out=self.B(out) #+ self.post_process_bias #get summed outputs of step
+
+
+
