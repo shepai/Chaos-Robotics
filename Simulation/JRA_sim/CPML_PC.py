@@ -198,10 +198,11 @@ class Brain:
     def runP(self,p):
         self.p=p
         self.t+=1
+        if self.p>self.t: self.p=1
         self.step(self.t)
         out=self.x[:,self.t+1] 
         #print(">>>",self.x[:,self.t+1])
-        self.out=self.B(out) #+ self.post_process_bias #get summed outputs of step
+        self.out=out
 
 
 
