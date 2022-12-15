@@ -18,12 +18,14 @@ a=agent()
 vision=np.array(a.get_image(points))
 
 #create network for sensory controller
-network=Network(5) #fdiffrent direction
+network=Network(2) #fdiffrent direction
 network.add_layer(vision.shape[0])
+network.add_layer(10)
 network.add_layer(6)
 
 out=Network(8) #fdiffrent direction
 out.add_layer(2) #chaotic oscillation
+out.add_layer(6)
 out.add_layer(6)
 
 
@@ -37,6 +39,7 @@ class controller:
         weights2,idx=self.outputNN.get_weights()
         self.shape_of_weights=(np.concatenate((weights,chaos.getWeights(),weights2))).shape
         self.path=[[0,0]]
+        self.vectors=[]
     def forward(self,input):
         #run through sensory processing
         outcome=self.sensoryNN.forward(input)
@@ -44,39 +47,49 @@ class controller:
         p_value=self.chaoticNN.values[ind] #select p value to control chaos
         #get chaotic generation
         self.chaoticNN.reset()
-        for i in range(self.chaoticNN.steps-5):
+        for i in range(self.chaoticNN.steps//2):
             self.chaoticNN.runP(p_value)
+        end_out=np.argmax(self.chaoticNN.out)
         #run through post porcessing
-        outcome=self.outputNN.forward(self.chaoticNN.out)
+        inp=np.zeros(self.chaoticNN.out.shape)
+        inp[end_out]=1
+        #print(p_value,self.chaoticNN.out,inp)
+        outcome=self.outputNN.forward(inp)
         ind=np.argmax(outcome)
         vectors=[[1,1],[1,0],[0,1],[-1,0],[0,-1],[1,-1],[-1,1],[-1,-1]]
+        self.vectors.append(vectors[ind]) #store path
         self.agent.set_vector(vectors[ind][0],vectors[ind][1])
         self.path.append([self.agent.y,self.agent.x])
         #print(self.agent.x,self.agent.y)
-        return getBump(self.agent,points)
+        return getBump(self.agent,self.points)
     def mutate_gene(self,gene):
         noise=np.random.normal(0,5,self.shape_of_weights) #add gaussian noise to the weights
         gene+=noise
         return gene
     def set_gene(self,gene):
         assert gene.shape==self.shape_of_weights, "Incorrect gene size" +str(gene.shape)+","+str(self.shape_of_weights) 
-        weights,idx=self.sensoryNN.get_weights()
-        weights2,idx2=self.outputNN.get_weights()
+        weight,idx=self.sensoryNN.get_weights()
+        weight2,idx2=self.outputNN.get_weights()
+        chaos=self.chaoticNN.getWeights()
         #set the differnet network data
+        #areas=random.choice([1,2,3,4,5,6,7]) #only change parts of the network
+        #if areas in [1,4,6,7]:
         weight=gene[0:idx[-2]]
+        #if areas in [2,4,5,7]:
         chaos=gene[idx[-2]:idx[-2]+6]
+        #if areas in [3,5,6,7]:
         weight2=gene[idx[-2]+6:]
         self.sensoryNN.reform_weights(weight,idx)
-        self.chaoticNN.formWeights(chaos)
+        #self.chaoticNN.formWeights(chaos) #keep as normal
         self.outputNN.reform_weights(weight2,idx2)
     def resetAgent(self):
-        global points
-        points=[]
+        self.vectors=[]
+        self.points=[]
         for i in range(600):
             randPoint=[random.randint(-50,50),random.randint(-50,50)]
-            points.append(copy.deepcopy(randPoint))
-        if [0,0] in points:
-            points.remove([0,0])
+            self.points.append(copy.deepcopy(randPoint))
+        if [0,0] in self.points:
+            self.points.remove([0,0])
         self.path=[[0,0]]
         self.agent=agent()
 
@@ -87,22 +100,27 @@ c=controller(network,chaos,out,a)
 #population of genotypes
 genotype = np.zeros((c.shape_of_weights))
 SIZE=100
-population=np.random.normal(0,10,(SIZE,genotype.shape[0]))+np.random.normal(0,5,(SIZE,genotype.shape[0]))
+population=np.random.normal(0,20,(SIZE,genotype.shape[0]))+np.random.normal(0,2,(SIZE,genotype.shape[0]))
 
 #setup trial function
 def trial(control,maxtime=5):
     dt=0.1
     t=0
-    input=control.agent.get_image(points)
+    input=control.agent.get_image(control.points)
     lastPoint=[control.agent.x,control.agent.y]
     contin=False
     while not contin and t<maxtime: #loop till hit or timer runs out
-        input=control.agent.get_image(points)
+        input=control.agent.get_image(control.points)
         contin=control.forward(input)
         t+=dt #time step
     currentPoint=[control.agent.x,control.agent.y] #get current position
     distance=math.sqrt((lastPoint[0]-currentPoint[0])**2 + (lastPoint[1]-currentPoint[1])**2)
-    return min(t/(maxtime+dt) ,1) #returns the fitness made up of time survived and distance travelled #*0.5 + distance/(maxtime/dt) * 0.5
+    #count how many turns
+    count=0
+    for v in control.vectors:
+        n=len(control.vectors)-control.vectors.count(v)
+        if n>count: count=n
+    return min(t/(maxtime+dt) *0.5 + distance/(maxtime/dt) * 0.5,1) * (count/len(control.vectors)) #returns the fitness made up of time survived and distance travelled #
 
 #genetic algorithm
 Gen=500
@@ -118,30 +136,37 @@ for i in range(Gen):
     for i in range(3):
         c.resetAgent()
         c.set_gene(population[t1])
-        f1+=trial(c)
+        f=trial(c)
+        f1+=f
+        if f>fitness:
+            bestPath=deepcopy(c.path)
+            points_path=deepcopy(points)
     f1/=3
-    if f1>fitness:
-        bestPath=c.path.copy()
     #trial 2
     f2=0
     for i in range(3):
         c.resetAgent()
         c.set_gene(population[t2])
-        f2+=trial(c)
+        f=trial(c)
+        f2+=f
+        if f>fitness:
+            bestPath=deepcopy(c.path)
+            points_path=deepcopy(points)
     f2/=3
-    if f2>fitness:
-        bestPath=c.path.copy()
-        points_path=points.copy()
     #selection
     if f1>f2:
         population[t2]=deepcopy(c.mutate_gene(population[t2]))
     elif f2>f1:
         population[t1]=deepcopy(c.mutate_gene(population[t1]))
+    else: #mutate both
+        population[t2]=deepcopy(c.mutate_gene(population[t2]))
+        population[t1]=deepcopy(c.mutate_gene(population[t1]))
     fitness=max([fitness,f1,f2])
 print(fitness)
 
 path=np.array(bestPath)
-show_points(points_path,a)
+c.resetAgent()
+show_points(points_path,c.agent)
 plt.plot(path[:,1],path[:,0])
 plt.show()
 
