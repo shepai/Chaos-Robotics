@@ -163,14 +163,14 @@ class Brain:
         self.weights= np.array([[-12,5.6],[0,-6.6]]) #np.random.normal(2,1.5,(2,2))
     def reset(self):
         self.mus=np.zeros((self.steps,))
-        self.mus[0]=-1
+        self.mus[0:9]=-1
         self.Cp=np.zeros((2,self.steps))
-        self.Cp[0][0]=1
-        self.Cp[1][0]=1
+        self.Cp[0][0:9]=1
+        self.Cp[1][0:9]=1
         self.x=np.zeros((2,self.steps))
-        self.x[0][0]=1#random.randint(0,2)
-        self.x[1][0]=1#random.randint(0,2)
-        self.t=0
+        self.x[0][0:9]=1#random.randint(0,2)
+        self.x[1][0:9]=1#random.randint(0,2)
+        self.t=8
     def formWeights(self,nparray):
         nparray=nparray.flatten() #size 6
         weights=nparray[0:4]
