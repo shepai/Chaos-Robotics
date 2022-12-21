@@ -122,55 +122,78 @@ def trial(control,maxtime=5):
         if n>count: count=n
     return min(t/(maxtime+dt) *0.5 + distance/(maxtime/dt) * 0.5,1) * (count/len(control.vectors)) #returns the fitness made up of time survived and distance travelled #
 
-#genetic algorithm
-Gen=500
-fitness=0
-bestPath=[]
-points_path=None
-for i in range(Gen):
-    print("Generation:",i,"with fitness",fitness)
-    t1=random.randint(0,SIZE-1)
-    t2 = t1+1 if (t1<SIZE-1) else t1-1 #local population tournaments
-    #trial 1
-    f1=0
-    for i in range(3):
-        c.resetAgent()
-        c.set_gene(population[t1])
-        f=trial(c)
-        f1+=f
-        if f>fitness:
-            bestPath=deepcopy(c.path)
-            points_path=deepcopy(points)
-    f1/=3
-    #trial 2
-    f2=0
-    for i in range(3):
-        c.resetAgent()
-        c.set_gene(population[t2])
-        f=trial(c)
-        f2+=f
-        if f>fitness:
-            bestPath=deepcopy(c.path)
-            points_path=deepcopy(points)
-    f2/=3
-    #selection
-    if f1>f2:
-        population[t2]=deepcopy(c.mutate_gene(population[t2]))
-    elif f2>f1:
-        population[t1]=deepcopy(c.mutate_gene(population[t1]))
-    else: #mutate both
-        population[t2]=deepcopy(c.mutate_gene(population[t2]))
-        population[t1]=deepcopy(c.mutate_gene(population[t1]))
-    fitness=max([fitness,f1,f2])
-print(fitness)
+def run():
+    #genetic algorithm
+    Gen=100
+    fitness=[0]
+    bestPath=[]
+    points_path=None
+    for i in range(Gen):
+        print("Generation:",i,"with fitness",fitness[-1])
+        t1=random.randint(0,SIZE-1)
+        t2 = t1+1 if (t1<SIZE-1) else t1-1 #local population tournaments
+        #trial 1
+        f1=0
+        for i in range(3):
+            c.resetAgent()
+            c.set_gene(population[t1])
+            f=trial(c)
+            f1+=f
+            if f>fitness[-1]:
+                bestPath=deepcopy(c.path)
+                points_path=deepcopy(points)
+        f1/=3
+        #trial 2
+        f2=0
+        for i in range(3):
+            c.resetAgent()
+            c.set_gene(population[t2])
+            f=trial(c)
+            f2+=f
+            if f>fitness[-1]:
+                bestPath=deepcopy(c.path)
+                points_path=deepcopy(points)
+        f2/=3
+        #selection
+        if f1>f2:
+            population[t2]=deepcopy(c.mutate_gene(population[t2]))
+        elif f2>f1:
+            population[t1]=deepcopy(c.mutate_gene(population[t1]))
+        else: #mutate both
+            population[t2]=deepcopy(c.mutate_gene(population[t2]))
+            population[t1]=deepcopy(c.mutate_gene(population[t1]))
+        fitness.append(max(fitness+[f1,f2]))
+    print(fitness)
+    return fitness.index(fitness[-1]) #get first occurence of best fitness
+    """
+    path=np.array(bestPath)
+    c.resetAgent()
+    show_points(points_path,c.agent)
+    plt.plot(path[:,1],path[:,0])
+    plt.show()"""
 
-path=np.array(bestPath)
-c.resetAgent()
-show_points(points_path,c.agent)
-plt.plot(path[:,1],path[:,0])
+f=[]
+for i in range(100):
+    f.append(run())
+    print(">>",f[-1])
+fig,ax1 = plt.subplots( figsize=(9, 4))
+print(f)
+# rectangular box plot
+bplot1 = ax1.boxplot(f,
+                     vert=True,  # vertical box alignment
+                     patch_artist=True)  # will be used to label x-ticks
+
+
+
+ax1.set_title('Simulaion results')
+
+ax1.yaxis.grid(True)
+ax1.set_xlabel('Simulation models')
+ax1.set_ylabel('Fitness of trials')
+
+
+fig.show()
 plt.show()
-
-
 """for i in range(10):
     c.forward(vision)
     c.mutateNN()"""
