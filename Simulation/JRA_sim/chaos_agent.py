@@ -28,39 +28,48 @@ out.add_layer(2) #chaotic oscillation
 out.add_layer(6)
 out.add_layer(6)
 
+Sennetwork=Network(8) #fdiffrent direction
+Sennetwork.add_layer(vision.shape[0])
+Sennetwork.add_layer(10)
+Sennetwork.add_layer(6)
 
 class controller:
-    def __init__(self,sensor,chaos,output,agent):
+    def __init__(self,sensor,chaos,output,agent,chaotic=True):
         self.sensoryNN=sensor
         self.chaoticNN=chaos
         self.outputNN=output
         self.agent=agent
         weights,idx=self.sensoryNN.get_weights()
         weights2,idx=self.outputNN.get_weights()
-        self.shape_of_weights=(np.concatenate((weights,chaos.getWeights(),weights2))).shape
+        if chaotic:
+            self.shape_of_weights=(np.concatenate((weights,chaos.getWeights(),weights2))).shape
+        else:
+            self.shape_of_weights=((weights)).shape
         self.path=[[0,0]]
         self.vectors=[]
+        self.chaotic=chaotic
     def forward(self,input):
         #run through sensory processing
         outcome=self.sensoryNN.forward(input)
         ind=np.argmax(outcome)
-        p_value=self.chaoticNN.values[ind] #select p value to control chaos
-        #get chaotic generation
-        self.chaoticNN.reset()
-        for i in range(self.chaoticNN.steps//2):
-            self.chaoticNN.runP(p_value)
-        end_out=np.argmax(self.chaoticNN.out)
-        #run through post porcessing
-        inp=np.zeros(self.chaoticNN.out.shape)
-        inp[end_out]=1
-        #print(p_value,self.chaoticNN.out,inp)
-        outcome=self.outputNN.forward(inp)
-        ind=np.argmax(outcome)
         vectors=[[1,1],[1,0],[0,1],[-1,0],[0,-1],[1,-1],[-1,1],[-1,-1]]
+        if self.chaotic:
+            p_value=self.chaoticNN.values[ind] #select p value to control chaos
+            #get chaotic generation
+            self.chaoticNN.reset()
+            for i in range(self.chaoticNN.steps//2):
+                self.chaoticNN.runP(p_value)
+            end_out=np.argmax(self.chaoticNN.out)
+            #run through post porcessing
+            inp=np.zeros(self.chaoticNN.out.shape)
+            inp[end_out]=1
+            #print(p_value,self.chaoticNN.out,inp)
+            outcome=self.outputNN.forward(inp)
+            ind=np.argmax(outcome)
+
         self.vectors.append(vectors[ind]) #store path
         self.agent.set_vector(vectors[ind][0],vectors[ind][1])
-        self.path.append([self.agent.y,self.agent.x])
-        #print(self.agent.x,self.agent.y)
+        self.path.append([self.agent.y,self.agent.x]) 
         return getBump(self.agent,self.points)
     def mutate_gene(self,gene):
         noise=np.random.normal(0,5,self.shape_of_weights) #add gaussian noise to the weights
@@ -73,15 +82,18 @@ class controller:
         chaos=self.chaoticNN.getWeights()
         #set the differnet network data
         #areas=random.choice([1,2,3,4,5,6,7]) #only change parts of the network
-        #if areas in [1,4,6,7]:
-        weight=gene[0:idx[-2]]
-        #if areas in [2,4,5,7]:
-        chaos=gene[idx[-2]:idx[-2]+6]
-        #if areas in [3,5,6,7]:
-        weight2=gene[idx[-2]+6:]
-        self.sensoryNN.reform_weights(weight,idx)
-        #self.chaoticNN.formWeights(chaos) #keep as normal
-        self.outputNN.reform_weights(weight2,idx2)
+        if self.chaotic:
+            #if areas in [1,4,6,7]:
+            weight=gene[0:idx[-2]]
+            #if areas in [2,4,5,7]:
+            chaos=gene[idx[-2]:idx[-2]+6]
+            #if areas in [3,5,6,7]:
+            weight2=gene[idx[-2]+6:]
+            self.sensoryNN.reform_weights(weight,idx)
+            #self.chaoticNN.formWeights(chaos) #keep as normal
+            self.outputNN.reform_weights(weight2,idx2)
+        else:
+            self.sensoryNN.reform_weights(gene,idx)
     def resetAgent(self):
         self.vectors=[]
         self.points=[]
@@ -93,14 +105,7 @@ class controller:
         self.path=[[0,0]]
         self.agent=agent()
 
-#create chaotic neuron pair
-chaos=Brain() 
-c=controller(network,chaos,out,a)
 
-#population of genotypes
-genotype = np.zeros((c.shape_of_weights))
-SIZE=100
-population=np.random.normal(0,20,(SIZE,genotype.shape[0]))+np.random.normal(0,2,(SIZE,genotype.shape[0]))
 
 #setup trial function
 def trial(control,maxtime=5):
@@ -122,14 +127,25 @@ def trial(control,maxtime=5):
         if n>count: count=n
     return min(t/(maxtime+dt) *0.5 + distance/(maxtime/dt) * 0.5,1) * (count/len(control.vectors)) #returns the fitness made up of time survived and distance travelled #
 
-def run():
+def run(chaos_):
+    #create chaotic neuron pair
+    chaos=Brain() 
+    c=None
+    if chaos_:
+        c=controller(network,chaos,out,a,chaotic=chaos_)
+    else: 
+        c=controller(Sennetwork,chaos,out,a,chaotic=chaos_)
+    #population of genotypes
+    genotype = np.zeros((c.shape_of_weights))
+    SIZE=100
+    population=np.random.normal(0,20,(SIZE,genotype.shape[0]))+np.random.normal(0,2,(SIZE,genotype.shape[0]))
     #genetic algorithm
-    Gen=100
+    Gen=200
     fitness=[0]
     bestPath=[]
     points_path=None
     for i in range(Gen):
-        print("Generation:",i,"with fitness",fitness[-1])
+        #print("Generation:",i,"with fitness",fitness[-1])
         t1=random.randint(0,SIZE-1)
         t2 = t1+1 if (t1<SIZE-1) else t1-1 #local population tournaments
         #trial 1
@@ -163,34 +179,51 @@ def run():
             population[t2]=deepcopy(c.mutate_gene(population[t2]))
             population[t1]=deepcopy(c.mutate_gene(population[t1]))
         fitness.append(max(fitness+[f1,f2]))
-    print(fitness)
-    return fitness.index(fitness[-1]) #get first occurence of best fitness
+    return fitness.index(fitness[-1]),fitness[-1] #get first occurence of best fitness
     """
     path=np.array(bestPath)
     c.resetAgent()
     show_points(points_path,c.agent)
     plt.plot(path[:,1],path[:,0])
     plt.show()"""
+trials=50
+f=np.zeros((2,trials))
+f1=np.zeros((2,trials))
+print("RUN...")
 
-f=[]
-for i in range(100):
-    f.append(run())
-    print(">>",f[-1])
-fig,ax1 = plt.subplots( figsize=(9, 4))
+for i in range(trials):
+    ind,fit=run(False)
+    f1[0][i]=ind
+    f1[1][i]=fit*100
+    print(">>",f1[1][i],f1[0][i])
+
+for i in range(trials):
+    ind,fit=run(True)
+    f[0][i]=ind
+    f[1][i]=fit*100
+    print(">>",f[1][i],f[0][i])
+fig,ax = plt.subplots(1,2,figsize=(9, 4))
 print(f)
-# rectangular box plot
-bplot1 = ax1.boxplot(f,
+print(f1)
+bplot1 = ax[0].boxplot(list([f[0],f1[0]]),
                      vert=True,  # vertical box alignment
-                     patch_artist=True)  # will be used to label x-ticks
+                     patch_artist=True,labels=["Chaotic neuron","FNN"])  # will be used to label x-ticks
+bplot2 = ax[1].boxplot(list([f[1],f1[1]]),
+                     vert=True,  # vertical box alignment
+                     patch_artist=True,labels=["Chaotic neuron","FNN"])  # will be used to label x-ticks
 
 
+ax[0].set_title('Shortest generation of convergence')
 
-ax1.set_title('Simulaion results')
+ax[0].yaxis.grid(True)
+#ax[0].set_xlabel('Simulation models')
+ax[0].set_ylabel('Generation')
 
-ax1.yaxis.grid(True)
-ax1.set_xlabel('Simulation models')
-ax1.set_ylabel('Fitness of trials')
+ax[1].set_title('Simulaion results as fitnesses over trials')
 
+ax[1].yaxis.grid(True)
+#ax[1].set_xlabel('Simulation models')
+ax[1].set_ylabel('Fitness of trials')
 
 fig.show()
 plt.show()
