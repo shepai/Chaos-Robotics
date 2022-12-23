@@ -1,6 +1,5 @@
 import sys
 import gym
-import gym
 from gym import logger as gymlogger
 import matplotlib.pyplot as plt
 from IPython import display as ipythondisplay
