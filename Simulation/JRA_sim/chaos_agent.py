@@ -32,6 +32,8 @@ Sennetwork=Network(8) #fdiffrent direction
 Sennetwork.add_layer(vision.shape[0])
 Sennetwork.add_layer(10)
 Sennetwork.add_layer(6)
+Sennetwork.add_layer(6)
+Sennetwork.add_layer(6)
 
 class controller:
     def __init__(self,sensor,chaos,output,agent,chaotic=True):
@@ -219,7 +221,7 @@ ax[0].yaxis.grid(True)
 #ax[0].set_xlabel('Simulation models')
 ax[0].set_ylabel('Generation')
 
-ax[1].set_title('Simulaion results as fitnesses over trials')
+ax[1].set_title('Simulation results as fitnesses over trials')
 
 ax[1].yaxis.grid(True)
 #ax[1].set_xlabel('Simulation models')
