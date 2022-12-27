@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from CPML_PC import Network, Brain
 from copy import deepcopy
+from timer_pred import predictor
+import time
 ##generate enviroment
 points=[]
 for i in range(600):
@@ -65,9 +67,15 @@ class controller:
             #run through post porcessing
             inp=np.zeros(self.chaoticNN.out.shape)
             inp[end_out]=1
+            if np.sum(self.chaoticNN.out)==0:
+                #forward
+                ind=2
+            else:
+                #turn
+                ind=0
             #print(p_value,self.chaoticNN.out,inp)
-            outcome=self.outputNN.forward(inp)
-            ind=np.argmax(outcome)
+            #outcome=self.outputNN.forward(inp)
+            #ind=np.argmax(outcome)
 
         self.vectors.append(vectors[ind]) #store path
         self.agent.set_vector(vectors[ind][0],vectors[ind][1])
@@ -192,18 +200,23 @@ trials=50
 f=np.zeros((2,trials))
 f1=np.zeros((2,trials))
 print("RUN...")
+p_=predictor(time.time())
+for i in range(trials):
+    ind,fit=run(True)
+    f[0][i]=ind
+    f[1][i]=fit*100
+    p_.calc_iteration(time.time())
+    print("Time left:",p_.time_left((trials*2) -i)/60,"minutes")
+    print(">>",f[1][i],f[0][i])
 
 for i in range(trials):
     ind,fit=run(False)
     f1[0][i]=ind
     f1[1][i]=fit*100
+    p_.calc_iteration(time.time())
+    print("Time left:",p_.time_left((trials) - i)/60,"minutes")
     print(">>",f1[1][i],f1[0][i])
 
-for i in range(trials):
-    ind,fit=run(True)
-    f[0][i]=ind
-    f[1][i]=fit*100
-    print(">>",f[1][i],f[0][i])
 fig,ax = plt.subplots(1,2,figsize=(9, 4))
 print(f)
 print(f1)

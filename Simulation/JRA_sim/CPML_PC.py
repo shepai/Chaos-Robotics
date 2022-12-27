@@ -204,5 +204,3 @@ class Brain:
         #print(">>>",self.x[:,self.t+1])
         self.out=out
 
-
-
