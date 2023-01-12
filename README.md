@@ -22,6 +22,20 @@ current problems within resilience are about adaptation relationships, such as t
 and recovery. This is in addition to having better hardware relationships to interface with an environment
 with reliability [4].
 
+## Contents
+
+### 3D_models
+This stores the 3D designs for printing within the realm of sensors and robotics hardware needed for the project.
+### Assets
+Within assets we store results, both image and video of trials and experiments.
+### Bio-inspired sensors
+Contains the code for interfacing with sensors
+### Hardware
+Contains the code for interfacing with hardware, mainly motor control and some GUI software that allows control over wifi for robots. The robot will need to use a Raspberry Pi Pico Wireless for this to work. You will also need a local area network that allows socket library connections. For university wifi this mat not work.
+### models
+A place to store models saved that took much time to train
+### Simulation
+Simulation stores all the simulation experiments. Some have explicitly written simulations for navigation, and others make use of open AI gym. The simulations make use of chaotic generations or chaotic neurons for control of an agent. 
 ## References
 [1] William A Lewinger and Roger D Quinn. Neurobiologically-based control system for an adaptively
 walking hexapod. Industrial Robot: An International Journal, 2011.
