@@ -6,7 +6,7 @@ cap = cv2.VideoCapture('C:/Users/dexte/github/Chaos-Robotics/Bio-inspired sensor
 # Check if camera opened successfully
 if (cap.isOpened()== False): 
   print("Error opening video stream or file")
-out = cv2.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'TactipOptic_long.avi',cv2.VideoWriter_fourcc(*'DIVX'), 15, (768,864))
+out = cv2.VideoWriter("C:/Users/dexte/github/Chaos-Robotics/Assets/"+'TactipOpticlong.avi',cv2.VideoWriter_fourcc(*'DIVX'), 30, (768,864))
 last=None
 # Read until video is completed
 hsv = np.zeros((1080,1920,3),dtype=np.float32)
@@ -19,7 +19,7 @@ try:
         #make binary image
         next[next>100]=255
         next[next<100]=0
-
+        #place initialization of hsv here to restart events based on frames
         
         if type(last)!=type(None):
             flow = cv2.calcOpticalFlowFarneback(last, next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
@@ -36,8 +36,8 @@ try:
             resized = cv2.resize(bgr, dim, interpolation = cv2.INTER_AREA)
             resized_orig = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
             vis = np.concatenate((resized, resized_orig), axis=0)
+            cv2.imshow("frame",vis)
             out.write(vis)
-            #cv2.imshow("frame",vis)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cap.release()
                 break
