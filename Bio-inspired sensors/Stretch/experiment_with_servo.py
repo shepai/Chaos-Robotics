@@ -16,11 +16,6 @@ def setPosition(angle):
     pwm.duty_u16(position)
     sleep(0.01)
 
-setPosition(0)
-sleep(2)
-setPosition(180)
-        
-
 av=0
 for i in range(100):
     av+=st.read_u16()
@@ -31,7 +26,7 @@ def get():
 ##v((sensor.read_u16()  * voltage)/voltage)
 
 def get_raw():
-    return st.read_u16()
+    print(st.read_u16())
 
 """angle=0
 while True:
