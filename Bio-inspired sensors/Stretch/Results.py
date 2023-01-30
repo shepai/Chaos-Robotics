@@ -28,15 +28,21 @@ def butter_lowpass_filter(data, cutoff, fs, order):
     y = filtfilt(b, a, data)
     return y
 
-data=np.array(list(a.values()))
-data=np.average(np.array([list(a.values()),list(b.values()),list(c.values()),list(d.values())]),axis=0) 
+arrays=[a,b,c,d]
+data=[]
+for ar in arrays:
+  data.append(np.array(list(a.values())))
+
+data=np.average(np.array(data),axis=0) 
 
 
 y = butter_lowpass_filter(data, cutoff, fs, order)
-
+#y=data
 #plt.plot(y)
 y=np.array(y)
+#plt.xticks(np.arange(100,180,10),[100,110,120,130,140,150,160,170])
 plt.plot(np.array(y)/np.max(y))
-
+plt.xlabel("Degrees past point of stretch")
+plt.ylabel("Unit of stretch smoothed")
             
 plt.show()
