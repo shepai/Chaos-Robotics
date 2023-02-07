@@ -25,7 +25,7 @@ with reliability [4].
 ## Contents
 
 ### 3D_models
-This stores the 3D designs for printing within the realm of sensors and robotics hardware needed for the project.
+This stores the 3D designs for printing within the realm of sensors and robotics hardware needed for the project. THe main effort is the design and construction of tactips.
 ### Assets
 Within assets we store results, both image and video of trials and experiments.
 ### Bio-inspired sensors
