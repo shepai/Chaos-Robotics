@@ -26,6 +26,10 @@ ar=np.random.normal(0,5,(20,10,10))
 images=ar
 #v=np.open(folder+"meta.npy")
 v=np.zeros((20,2))
+v[:,0]=1
+v[:,1]=1
+v[0]=[-1,0]
+v[-1]=[-1,-1]
 vecs=v
 
 fig, axes = plt.subplots(1,2, figsize=(3.5, 2.0))
@@ -35,19 +39,27 @@ axes[1].set_title("B: Vector", loc="left")
 h=images[0].shape[0]
 w=images[0].shape[1]
 
-im=np.zeros((h*(len(images)//2),w*(len(images)//2)))
-
+im=np.zeros((h*((len(images))//2),w*(len(images)//2)))
+print(im.shape,h,w)
+print(((len(images)//2) -1) * ((len(images)//2) -1))
 c=0
-for i in range(len(images)//2):
-    for j in range(len(images)//2)
-    percentage=(i+1)/len(images)
-    #shaded=images[i]*percentage #get shade increasing over time
-    #im=(im+shaded) #add the new shade
-    im[i*h:((1+i)*h),j*w:(j+1)*w]=images[c]
-    c+=1
-    a=vecs[c]
-    axes[1].arrow(0, 0, a[0], a[1], head_width=0.2, head_length=0.1, length_includes_head=True, facecolor=lighten_color('b', percentage))
-
+i=0
+j=0
+while i <((len(images)//2)) and c<len(images):
+    while j <((len(images)//2)) and c<len(images):
+        #print(c,i*h,":",((1+i)*h),j*w,":",(j+1)*w)
+        percentage=(i+1)/len(images)
+        #shaded=images[i]*percentage #get shade increasing over time
+        #im=(im+shaded) #add the new shade
+        im[i*h:((1+i)*h),j*w:(j+1)*w]=images[c]
+        a=vecs[c]
+        axes[1].arrow(0, 0, a[0], a[1], head_width=0.2, head_length=0.1, length_includes_head=True, facecolor=lighten_color('b', percentage))
+        c+=1
+        j+=1
+    j=0
+    i+=1
+    
+        
 #axes[0].figure(figsize=(5,1))
 
 axes[0].imshow(im)
@@ -60,4 +72,5 @@ axes[1].set_xlim((-1.1, 1.1))
 axes[1].set_ylim((-1.1, 1.1))
 axes[1].set_aspect("equal")
 fig.tight_layout()
-fig.savefig("./"+"save"+".pdf")
+#fig.savefig("./"+"save"+".pdf")
+fig.show()
