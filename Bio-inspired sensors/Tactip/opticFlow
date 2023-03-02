@@ -25,9 +25,10 @@ p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
 # Create a mask image for drawing purposes
 mask = np.zeros_like(old_frame)
 
-
+begin=[]
 
 while(1):
+    #vectors=[]
     ret, frame = cap.read()
     if not ret:
         print('No frames grabbed!')
@@ -43,22 +44,43 @@ while(1):
         good_new = p1[st==1]
         good_old = p0[st==1]
     # draw the tracks
-    for i, (new, old) in enumerate(zip(good_new, good_old)):
+    started=False
+    if len(begin)==0: #has not been chosen
+        started=True
+    """if len(begin)!=len(good_new):
+        begin=[]
+        started=True"""
+    mask = np.zeros_like(old_frame) 
+    for i, (new, old) in enumerate(zip(good_new[0:10], good_old[0:10])):
         a, b = new.ravel()
         c, d = old.ravel()
         #mask = cv.line(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
-        mask = cv.arrowedLine(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
-        #frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
-    img = cv.add(frame, mask)
-    cv.imshow('frame', img)
+        #mask = cv.arrowedLine(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
+        frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
+        if started:
+            begin.append([c, d])
+    
+    for i in range(len(begin)):
+        if i<len(begin) and i<len(good_new):
+            vy=begin[i][1]-good_new[i][1]
+            vx=begin[i][0]-good_new[i][0]
+            #vectors.append([vx,vy])
+            mask = cv.arrowedLine(mask, (int(begin[i][0]), int(begin[i][1])), (int(good_new[i][0]), int(good_new[i][1])), color[i].tolist(), 2)
+    
+    #img = cv.add(frame, mask)
+    cv.imshow('frame', frame)
     cv.imshow('displacement', mask)
     k = cv.waitKey(1) & 0xff
     if k == ord('q'):
         break
     elif k == ord('r'):
+        begin=[]
         img = frame.copy()
         mask = np.zeros_like(old_frame)
+        old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
+        p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
         print("reset")
+
     # Now update the previous frame and previous points
     old_gray = frame_gray.copy()
     p0 = good_new.reshape(-1, 1, 2)
