@@ -14,13 +14,15 @@ feature_params = dict( maxCorners = 100,
                        blockSize = 7 )
 # Parameters for lucas kanade optical flow
 lk_params = dict( winSize  = (15, 15),
-                  maxLevel = 2,
-                  criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03))
+                  maxLevel = 10,
+                  criteria = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.1))
 # Create some random colors
 color = np.random.randint(0, 255, (100, 3))
 # Take first frame and find corners in it
 ret, old_frame = cap.read()
+#old_frame=old_frame[125:404,188:408]
 old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
+
 p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
 # Create a mask image for drawing purposes
 mask = np.zeros_like(old_frame)
@@ -65,7 +67,7 @@ while(1):
             vy=begin[i][1]-good_new[i][1]
             vx=begin[i][0]-good_new[i][0]
             #vectors.append([vx,vy])
-            mask = cv.arrowedLine(mask, (int(begin[i][0]), int(begin[i][1])), (int(good_new[i][0]), int(good_new[i][1])), color[i].tolist(), 2)
+            mask = cv.arrowedLine(mask, (int(begin[i][0]), int( begin[i][1])), (int(good_new[i][0]), int(good_new[i][1])), color[i].tolist(), 2)
     
     #img = cv.add(frame, mask)
     cv.imshow('frame', frame)
