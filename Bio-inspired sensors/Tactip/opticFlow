@@ -35,8 +35,8 @@ while(1):
         break
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     #binary
-    frame_gray[frame_gray>245]=255
-    frame_gray[frame_gray<=245]=0
+    #frame_gray[frame_gray>245]=255
+    #frame_gray[frame_gray<=245]=0
     # calculate optical flow
     p1, st, err = cv.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
     # Select good points
