@@ -2,14 +2,15 @@
 # import the opencv library
 import cv2 as cv
 import numpy as np
-  
+import math
+
 # define a video capture object
 cap = cv.VideoCapture(0)
   
 
 # params for ShiTomasi corner detection
 feature_params = dict( maxCorners = 100,
-                       qualityLevel = 0.3,
+                       qualityLevel = 0.1,
                        minDistance = 7,
                        blockSize = 7 )
 # Parameters for lucas kanade optical flow
@@ -24,6 +25,7 @@ ret, old_frame = cap.read()
 old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
 
 p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+#p0 = cv.cornerMinEigenVal(old_gray, blockSize=7,ksize = 3)
 # Create a mask image for drawing purposes
 mask = np.zeros_like(old_frame)
 
@@ -49,11 +51,11 @@ while(1):
     started=False
     if len(begin)==0: #has not been chosen
         started=True
-    """if len(begin)!=len(good_new):
+    if len(begin)!=len(good_new):
         begin=[]
-        started=True"""
+        started=True
     mask = np.zeros_like(old_frame) 
-    for i, (new, old) in enumerate(zip(good_new[0:10], good_old[0:10])):
+    for i, (new, old) in enumerate(zip(good_new, good_old)):
         a, b = new.ravel()
         c, d = old.ravel()
         #mask = cv.line(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
@@ -61,26 +63,32 @@ while(1):
         frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
         if started:
             begin.append([c, d])
-    
+    sumof=0
+    sumofsq=0
     for i in range(len(begin)):
         if i<len(begin) and i<len(good_new):
             vy=begin[i][1]-good_new[i][1]
             vx=begin[i][0]-good_new[i][0]
             #vectors.append([vx,vy])
-            mask = cv.arrowedLine(mask, (int(begin[i][0]), int( begin[i][1])), (int(good_new[i][0]), int(good_new[i][1])), color[i].tolist(), 2)
-    
+            sumof+= math.sqrt((vy**2) + (vx**2))
+            sumofsq+= ((vy**2) + (vx**2))
+            if math.sqrt((vy**2) + (vx**2))> 1.5:
+                mask = cv.arrowedLine(mask, (int(begin[i][0]), int( begin[i][1])), (int(good_new[i][0]), int(good_new[i][1])), color[i].tolist(), 2)
+    average=sumof/min(len(begin),len(good_new))
+    std=math.sqrt((sumofsq/min(len(begin),len(good_new)))-(average**2))
+    #print(average/std)
     #img = cv.add(frame, mask)
     cv.imshow('frame', frame)
     cv.imshow('displacement', mask)
     k = cv.waitKey(1) & 0xff
     if k == ord('q'):
         break
-    elif k == ord('r'):
+    elif k == ord('r') or (average/std<0.9):
         begin=[]
         img = frame.copy()
         mask = np.zeros_like(old_frame)
         old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
-        p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+        #p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
         print("reset")
 
     # Now update the previous frame and previous points
