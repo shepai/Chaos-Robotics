@@ -3,6 +3,71 @@
 import cv2 as cv
 import numpy as np
 import math
+def adaptive(img):
+    frame=np.copy(img)
+    threshold=200
+    sum=0
+    while sum<21000000:
+        frame[frame>threshold]=255
+        frame[frame<=threshold]=0
+        sum=np.sum(frame)
+        if sum>22000000:
+            threshold+=1
+        elif sum<22000000:
+            threshold-=1
+        frame=np.copy(img)
+    frame[frame>threshold]=255
+    frame[frame<=threshold]=0
+    return frame
+
+def removeBlob(im):
+    # find all of the connected components (white blobs in your image).
+    # im_with_separated_blobs is an image where each detected blob has a different pixel value ranging from 1 to nb_blobs - 1.
+    nb_blobs, im_with_separated_blobs, stats, _ = cv.connectedComponentsWithStats(im)
+    # stats (and the silenced output centroids) gives some information about the blobs. See the docs for more information. 
+    # here, we're interested only in the size of the blobs, contained in the last column of stats.
+    sizes = stats[:, -1]
+    # the following lines result in taking out the background which is also considered a component, which I find for most applications to not be the expected output.
+    # you may also keep the results as they are by commenting out the following lines. You'll have to update the ranges in the for loop below. 
+    sizes = sizes[1:]
+    nb_blobs -= 1
+
+    # minimum size of particles we want to keep (number of pixels).
+    # here, it's a fixed value, but you can set it as you want, eg the mean of the sizes or whatever.
+    min_size = 250
+
+    # output image with only the kept components
+    im_result = np.zeros_like(im_with_separated_blobs)
+    im_result_with = np.zeros_like(im_with_separated_blobs)
+    # for every component in the image, keep it only if it's above min_size
+    for blob in range(nb_blobs):
+        if sizes[blob] >= min_size:
+            # see description of im_with_separated_blobs above
+            im_result_with[im_with_separated_blobs == blob + 1] = 255#
+        if sizes[blob] <= min_size:
+            # see description of im_with_separated_blobs above
+            im_result[im_with_separated_blobs == blob + 1] = 255#
+    #difference = cv.subtract(im.astype(np.uint8), im_result.astype(np.uint8))
+    # color the mask red
+    #ret, mask = cv.threshold(difference, 0, 255,cv.THRESH_BINARY_INV |cv.THRESH_OTSU)
+    #difference[mask != 255] = [255]
+
+    return im_result_with,im_result
+
+def get_processed(frame):
+    #make gray and preprocess the binary threshold
+    frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    frame_gray=adaptive(frame_gray)
+    #remove the blobs
+    to_Show,spots=removeBlob(frame_gray)
+    to_Show=to_Show.astype(np.uint8)
+    spots=spots.astype(np.uint8)
+    #replace parts
+    inds=np.argwhere(to_Show == 255)
+    frame[inds[:,0],inds[:,1]]=[80,80,80]
+    inds=np.argwhere(spots == 255)
+    frame[inds[:,0],inds[:,1]]=[255,255,255]
+    return frame
 
 # define a video capture object
 cap = cv.VideoCapture(0)
@@ -21,13 +86,38 @@ lk_params = dict( winSize  = (15, 15),
 color = np.random.randint(0, 255, (100, 3))
 # Take first frame and find corners in it
 ret, old_frame = cap.read()
+old_frame=get_processed(old_frame)
 #old_frame=old_frame[125:404,188:408]
+good_new=[]
 old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
+p0=np.argwhere(old_gray == 255)
+p0=p0.astype(np.float32)
+copied=[[0,0]]
+print(len(p0))
+d=5
+for i in range(len(p0)):
+    x=p0[i][0]
+    y=p0[i][1]
+    if x>144 and x<450 and y>110 and y<425: #if in range
+        for j in range(len(copied)): #check not existant
+            x1=copied[j][0]
+            y1=copied[j][1]
+            if (x1-d<x or x1+d>x) and (y1-d<y or y1+d>y): #not in bounds
+                copied.append([x,y])
+p0=np.array(copied)
 
-p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+print(len(p0))
+s=p0.shape
+p0=p0.reshape([s[0],1,s[1]])
+np.save("./calibrate",p0)
+#p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+print(p0)
+exit()
 #p0 = cv.cornerMinEigenVal(old_gray, blockSize=7,ksize = 3)
 # Create a mask image for drawing purposes
 mask = np.zeros_like(old_frame)
+
+#print(p0)
 
 begin=[]
 
@@ -37,6 +127,8 @@ while(1):
     if not ret:
         print('No frames grabbed!')
         break
+    frame=get_processed(frame)
+    
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     #binary
     #frame_gray[frame_gray>245]=255
@@ -60,9 +152,10 @@ while(1):
         c, d = old.ravel()
         #mask = cv.line(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
         #mask = cv.arrowedLine(mask, (int(a), int(b)), (int(c), int(d)), color[i].tolist(), 2)
-        frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
-        if started:
-            begin.append([c, d])
+        if i<len(color):
+            frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
+            if started:
+                begin.append([c, d])
     sumof=0
     sumofsq=0
     for i in range(len(begin)):
@@ -89,6 +182,7 @@ while(1):
         mask = np.zeros_like(old_frame)
         old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
         #p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
+        
         print("reset")
 
     # Now update the previous frame and previous points

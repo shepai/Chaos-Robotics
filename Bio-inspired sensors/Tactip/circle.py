@@ -1,10 +1,9 @@
 import numpy as np
 import cv2 as cv
-from skimage.measure import regionprops
 
 
 # define a video capture object
-cap = cv.VideoCapture(1)
+cap = cv.VideoCapture(0)
 
 def adaptive(img):
     frame=np.copy(img)
@@ -41,8 +40,12 @@ def removeBlob(im):
 
     # output image with only the kept components
     im_result = np.zeros_like(im_with_separated_blobs)
+    im_result_with = np.zeros_like(im_with_separated_blobs)
     # for every component in the image, keep it only if it's above min_size
     for blob in range(nb_blobs):
+        if sizes[blob] >= min_size:
+            # see description of im_with_separated_blobs above
+            im_result_with[im_with_separated_blobs == blob + 1] = 255#
         if sizes[blob] <= min_size:
             # see description of im_with_separated_blobs above
             im_result[im_with_separated_blobs == blob + 1] = 255#
@@ -51,29 +54,28 @@ def removeBlob(im):
     #ret, mask = cv.threshold(difference, 0, 255,cv.THRESH_BINARY_INV |cv.THRESH_OTSU)
     #difference[mask != 255] = [255]
 
-    return im_result
+    return im_result_with,im_result
 
-while(1):
-    #vectors=[]
-    ret, frame = cap.read()
+def get_processed(frame):
+    #make gray and preprocess the binary threshold
     frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame_gray=adaptive(frame_gray)
-    to_Show=removeBlob(frame_gray)
+    #remove the blobs
+    to_Show,spots=removeBlob(frame_gray)
     to_Show=to_Show.astype(np.uint8)
-    """#img = cv.medianBlur(frame,5)
-    to_Show=np.zeros_like(frame_gray)
-    # calculate moments of binary image
-    contours, hierarchies = cv.findContours(frame_gray, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
-    # put text and highlight the center
-    for centroid in contours:
-        centroid=np.squeeze(centroid)
-        if len(centroid.shape)>1:
-            for j in centroid:
-                cv.circle(to_Show,(int(j[0]),int(j[1])),3, (255), thickness=1, lineType=8, shift=0)#"""
-        #do stuff with that centroid ;)
-    cv.imshow('detected circles',to_Show)
+    spots=spots.astype(np.uint8)
+    #replace parts
+    inds=np.argwhere(to_Show == 255)
+    frame[inds[:,0],inds[:,1]]=[80,80,80]
+    inds=np.argwhere(spots == 255)
+    frame[inds[:,0],inds[:,1]]=[255,255,255]
+    return frame
+while(1):
+    #vectors=[]
+    ret, frame = cap.read() #get image
+    frame=get_processed(frame)
+
     cv.imshow('vision',frame)
-    cv.imshow('grey',frame_gray)
     k = cv.waitKey(1) & 0xff
     if k == ord('q'):
         break
