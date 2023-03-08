@@ -92,26 +92,23 @@ good_new=[]
 old_gray = cv.cvtColor(old_frame, cv.COLOR_BGR2GRAY)
 p0=np.argwhere(old_gray == 255)
 p0=p0.astype(np.float32)
-copied=[[0,0]]
 print(len(p0))
-d=5
-for i in range(len(p0)):
-    x=p0[i][0]
-    y=p0[i][1]
-    if x>144 and x<450 and y>110 and y<425: #if in range
-        for j in range(len(copied)): #check not existant
-            x1=copied[j][0]
-            y1=copied[j][1]
-            if (x1-d<x or x1+d>x) and (y1-d<y or y1+d>y): #not in bounds
-                copied.append([x,y])
-p0=np.array(copied)
+d=10
 
-print(len(p0))
+a,b = np.tril_indices(p0.shape[0], -1)
+diss = np.linalg.norm(p0[b] - p0[a], axis=1)
+
+near = p0[(np.concatenate([b[diss < d], a[diss < d]]))]
+import matplotlib.pyplot as plt
+
+plt.scatter(near[:,0], near[:,1])
+plt.show()
+print(len(near))
 s=p0.shape
 p0=p0.reshape([s[0],1,s[1]])
-np.save("./calibrate",p0)
+#np.save("./calibrate",p0)
 #p0 = cv.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
-print(p0)
+
 exit()
 #p0 = cv.cornerMinEigenVal(old_gray, blockSize=7,ksize = 3)
 # Create a mask image for drawing purposes
