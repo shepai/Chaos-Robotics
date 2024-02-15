@@ -5,33 +5,25 @@ from time import sleep
 from machine import Pin, PWM
 
 #motor
-pwm = PWM(Pin(2))
-pwm.freq(50)
+servo_pin = Pin(2)
+servo_pwm = PWM(servo_pin)
+# Set the servo angle
+servo_pwm.freq(50)  # Set PWM frequency to 50 Hz (standard for servos)
 #stretch listen
 st = ADC(Pin(27))
-
 def setPosition(angle):
-    position=1000+50*angle
-    if position>9000: position=9000
-    pwm.duty_u16(position)
-    sleep(0.01)
-
-av=0
-for i in range(100):
-    av+=st.read_u16()
-av/=100
-
-def get():
-    return min(max(0,(st.read_u16() - av)/400),1)#*3.3
+    # Define servo parameters (pulse width range for 180 degrees)
+    min_duty = 40  # Adjust according to your servo
+    max_duty = 9000  # Adjust according to your servo
+    # Convert angle to duty cycle
+    duty = min_duty + (max_duty - min_duty) * angle / 180.0
+    
+    servo_pwm.duty_u16(int(duty))
+    
 ##v((sensor.read_u16()  * voltage)/voltage)
 
 def get_raw():
     print(st.read_u16())
 
-"""angle=0
-while True:
-    setPosition(angle)
-    sleep(0.5)
-    print(angle,get())
-    if angle==180: break
-    angle+=1"""
+
+setPosition(0)
